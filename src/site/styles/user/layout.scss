@@ -385,14 +385,22 @@ body {
   }
 }
 
-/* 7. 优化侧边栏间距 */
+/* 7. 优化侧边栏间距 - 防止超出屏幕 */
 @media (min-width: 1400px) {
   .sidebar {
-    left: calc(50vw + calc(var(--dg-content-max-width) / 2) + 60px) !important;
-  }
-  
-  .filetree-wrapper {
-    width: calc(50vw - calc(var(--dg-content-max-width) / 2) - 60px) !important;
+    /* 使用更安全的定位方式 */
+    left: calc(50vw + calc(var(--dg-content-max-width) / 2) + var(--dg-sidebar-gap)) !important;
+    max-width: var(--dg-sidebar-max-width) !important;
+    right: auto !important;
+    
+    /* 确保不超出屏幕右侧 */
+    max-width: min(var(--dg-sidebar-max-width), calc(100vw - 50vw - calc(var(--dg-content-max-width) / 2) - var(--dg-sidebar-gap) - 20px)) !important;
+    
+    /* 如果仍然超出，使用 right 定位 */
+    @media (min-width: 2000px) {
+      right: 20px !important;
+      left: auto !important;
+    }
   }
 }
 
@@ -504,18 +512,45 @@ body {
   }
 }
 
-/* 11. 优化响应式布局 */
-@media (max-width: 1400px) {
+/* 11. 优化响应式布局 - 修复重叠问题 */
+@media (min-width: 1400px) {
   .content {
-    margin-left: calc(var(--dg-filetree-width) + 20px);
-    max-width: calc(100vw - var(--dg-filetree-width) - 50px) !important;
+    margin-left: calc(var(--dg-filetree-width) + var(--dg-filetree-gap)) !important;
+    margin-right: calc(var(--dg-sidebar-max-width) + var(--dg-sidebar-gap) + 20px) !important;
+    max-width: var(--dg-content-max-width) !important;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  /* 折叠状态 */
+  body:has(.filetree-sidebar.filetree-collapsed) .content {
+    margin-left: calc(70px + var(--dg-filetree-gap)) !important;
+  }
+  
+  /* 无侧边栏时 */
+  body:not(:has(.sidebar)) .content {
+    margin-right: var(--dg-sidebar-gap) !important;
+  }
+}
+
+@media (max-width: 1399px) and (min-width: 1000px) {
+  .content {
+    margin-left: calc(var(--dg-filetree-width) + 20px) !important;
+    margin-right: 20px !important;
+    max-width: calc(100vw - var(--dg-filetree-width) - 40px) !important;
+  }
+  
+  /* 折叠状态 */
+  body:has(.filetree-sidebar.filetree-collapsed) .content {
+    margin-left: calc(60px + 20px) !important;
+    max-width: calc(100vw - 80px) !important;
   }
 }
 
 @media (max-width: 1000px) {
   .content {
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: auto !important;
+    margin-right: auto !important;
     max-width: var(--dg-content-max-width) !important;
   }
 }
@@ -1056,17 +1091,18 @@ button,
 .theme-toggle-button {
   background: color-mix(in srgb, var(--background-secondary) 60%, transparent);
   border: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent);
-  border-radius: var(--radius-m);
-  padding: 0.5em 0.75em;
+  border-radius: var(--radius-s);
+  padding: 0.4em 0.6em;
   cursor: pointer;
   transition: all var(--transition-base);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--text-normal);
-  font-size: 1rem;
-  min-width: 2.5em;
-  min-height: 2.5em;
+  font-size: 0.9rem;
+  min-width: 2em;
+  min-height: 2em;
+  position: relative;
   
   &:hover {
     background-color: color-mix(in srgb, var(--background-secondary) 80%, transparent);
@@ -1085,15 +1121,25 @@ button,
   }
   
   .theme-icon {
-    display: none;
-    width: 1.2em;
-    height: 1.2em;
+    position: absolute;
+    width: 1.1em;
+    height: 1.1em;
+    opacity: 0;
+    transition: opacity var(--transition-base);
+    pointer-events: none;
   }
   
   .theme-icon-light,
   .theme-icon-dark,
   .theme-icon-auto {
-    display: inline-block;
+    opacity: 1;
+  }
+  
+  /* 确保图标可见 */
+  svg {
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 }
 
@@ -1111,14 +1157,17 @@ button,
   justify-content: center;
 }
 
-/* 45. 增加左侧目录宽度 */
+/* 45. 增加左侧目录宽度并修复布局 */
 body {
-  --dg-filetree-width: 320px;
-  --dg-filetree-min-width: 320px;
+  --dg-filetree-width: 300px;
+  --dg-filetree-min-width: 300px;
+  --dg-filetree-gap: 60px;
+  --dg-sidebar-gap: 60px;
   
   @media (max-width: 1400px) {
-    --dg-filetree-width: 300px;
-    --dg-filetree-min-width: 300px;
+    --dg-filetree-width: 280px;
+    --dg-filetree-min-width: 280px;
+    --dg-filetree-gap: 40px;
   }
   
   @media (max-width: 1000px) {
@@ -1135,12 +1184,15 @@ body {
     
     /* 折叠状态 */
     &:has(.filetree-sidebar.filetree-collapsed) {
-      width: 80px !important;
-      min-width: 80px !important;
+      width: 70px !important;
+      min-width: 70px !important;
     }
   }
   
   @media (max-width: 1399px) and (min-width: 1000px) {
+    width: var(--dg-filetree-width) !important;
+    min-width: var(--dg-filetree-min-width) !important;
+    
     &:has(.filetree-sidebar.filetree-collapsed) {
       width: 60px !important;
       min-width: 60px !important;
@@ -1162,17 +1214,17 @@ body {
 .filetree-toggle-button {
   background: color-mix(in srgb, var(--background-secondary) 60%, transparent);
   border: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent);
-  border-radius: var(--radius-m);
-  padding: 0.4em 0.6em;
+  border-radius: var(--radius-s);
+  padding: 0.35em 0.5em;
   cursor: pointer;
   transition: all var(--transition-base);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   color: var(--text-normal);
-  font-size: 0.9rem;
-  min-width: 2em;
-  min-height: 2em;
+  font-size: 0.85rem;
+  min-width: 1.8em;
+  min-height: 1.8em;
   
   &:hover {
     background-color: color-mix(in srgb, var(--background-secondary) 80%, transparent);
@@ -1202,8 +1254,8 @@ body {
 }
 
 .filetree-sidebar.filetree-collapsed {
-  width: 80px !important;
-  min-width: 80px;
+  width: 70px !important;
+  min-width: 70px;
   padding: 0.75em 0.5em !important;
   
   .filetree-header {
@@ -1214,7 +1266,7 @@ body {
     h1 {
       writing-mode: vertical-rl;
       text-orientation: mixed;
-      font-size: 0.85rem !important;
+      font-size: 0.8rem !important;
       margin: 0;
       max-width: 100%;
       overflow: hidden;
@@ -1234,7 +1286,8 @@ body {
   .filetree-toggle-button {
     width: 100%;
     min-width: auto;
-    padding: 0.5em;
+    padding: 0.4em;
+    font-size: 0.8rem;
   }
   
   .search-button {
@@ -1258,24 +1311,420 @@ body {
   }
 }
 
-/* 47. 调整内容区域以适应折叠的文件树 */
-@media (min-width: 1400px) {
-  .filetree-wrapper:has(.filetree-sidebar.filetree-collapsed) ~ .content,
-  body:has(.filetree-sidebar.filetree-collapsed) .content {
-    margin-left: calc(80px + 20px) !important;
-  }
-}
-
-@media (max-width: 1399px) and (min-width: 1000px) {
-  .filetree-wrapper:has(.filetree-sidebar.filetree-collapsed) ~ .content,
-  body:has(.filetree-sidebar.filetree-collapsed) .content {
-    margin-left: calc(60px + 20px) !important;
-  }
-}
+/* 47. 调整内容区域以适应折叠的文件树 - 已整合到上面的响应式布局中 */
 
 /* 48. 优化文件树标题区域 */
 .filetree-sidebar h1 {
   transition: all var(--transition-slow);
   margin-bottom: 0.5em;
 }
+
+/* 49. 消除页面跳转闪烁 - 优化内容区域过渡 */
+.content {
+  transition: opacity var(--transition-fast);
+  will-change: opacity;
+}
+
+/* 50. 优化内部链接点击体验 */
+a.internal-link {
+  transition: all var(--transition-fast);
+  
+  &:hover {
+    transform: translateX(2px);
+  }
+  
+  /* 点击时的反馈 */
+  &:active {
+    transform: translateX(1px);
+    opacity: 0.8;
+  }
+}
+
+/* 51. 优化整体布局 - 确保不重叠 */
+body {
+  overflow-x: hidden;
+}
+
+/* 52. 修复侧边栏超出屏幕问题 */
+@media (min-width: 1400px) {
+  .sidebar {
+    /* 确保不超出屏幕右侧 */
+    max-width: min(var(--dg-sidebar-max-width), calc(100vw - 50vw - calc(var(--dg-content-max-width) / 2) - var(--dg-sidebar-gap) - 20px)) !important;
+    
+    /* 如果内容区域太宽，调整侧边栏位置 */
+    @media (min-width: 2000px) {
+      right: 20px !important;
+      left: auto !important;
+    }
+  }
+}
+
+/* 53. 优化内容区域宽度计算 - 考虑侧边栏 */
+@media (min-width: 1400px) {
+  body {
+    --dg-content-max-width: min(1200px, calc(100vw - var(--dg-filetree-width) - var(--dg-sidebar-max-width) - var(--dg-filetree-gap) - var(--dg-sidebar-gap) - 40px));
+  }
+  
+  @media (min-width: 1600px) {
+    body {
+      --dg-content-max-width: min(1400px, calc(100vw - var(--dg-filetree-width) - var(--dg-sidebar-max-width) - var(--dg-filetree-gap) - var(--dg-sidebar-gap) - 60px));
+    }
+  }
+  
+  /* 折叠状态 */
+  body:has(.filetree-sidebar.filetree-collapsed) {
+    --dg-content-max-width: min(1200px, calc(100vw - 70px - var(--dg-sidebar-max-width) - var(--dg-filetree-gap) - var(--dg-sidebar-gap) - 40px));
+  }
+  
+  @media (min-width: 1600px) {
+    body:has(.filetree-sidebar.filetree-collapsed) {
+      --dg-content-max-width: min(1400px, calc(100vw - 70px - var(--dg-sidebar-max-width) - var(--dg-filetree-gap) - var(--dg-sidebar-gap) - 60px));
+    }
+  }
+}
+
+/* 54. 现代化布局优化 */
+.content {
+  /* 确保内容区域有足够的空间 */
+  min-height: calc(100vh - 180px);
+  
+  /* 优化滚动体验 */
+  scroll-padding-top: 100px;
+}
+
+/* 55. 优化文件树交互 */
+.notelink {
+  /* 平滑过渡，避免闪烁 */
+  transition: all var(--transition-fast);
+  
+  a {
+    /* 优化链接点击 */
+    position: relative;
+    
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: transparent;
+      transition: background var(--transition-fast);
+    }
+    
+    &:active::after {
+      background: color-mix(in srgb, var(--text-accent) 10%, transparent);
+    }
+  }
+}
+
+/* 56. 优化页面加载动画 */
+@keyframes contentFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.content {
+  animation: contentFadeIn 0.3s ease-out;
+}
+
+/* 57. 优化侧边栏容器 */
+.sidebar-container {
+  /* 确保内容不溢出 */
+  max-width: 100%;
+  overflow: hidden;
+}
+
+/* 58. 优化文件树滚动 */
+.filetree-sidebar .folder {
+  /* 平滑滚动 */
+  scroll-behavior: smooth;
+  
+  /* 优化滚动条 */
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--text-muted) 25%, transparent);
+    border-radius: var(--radius-s);
+    
+    &:hover {
+      background-color: color-mix(in srgb, var(--text-muted) 40%, transparent);
+    }
+  }
+}
+
+/* 59. 统一按钮样式 */
+button,
+.theme-toggle-button,
+.filetree-toggle-button,
+.search-button {
+  /* 统一的按钮基础样式 */
+  font-family: inherit;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  
+  /* 点击反馈 */
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+/* 60. 优化整体视觉层次 */
+body {
+  /* 确保所有元素都在正确的层级 */
+  position: relative;
+}
+
+/* 61. 优化移动端体验 */
+@media (max-width: 1000px) {
+  .content {
+    /* 移动端减少动画 */
+    animation: none;
+  }
+  
+  /* 移动端优化触摸目标 */
+  .notelink,
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* 62. 优化打印样式 */
+@media print {
+  .filetree-wrapper,
+  .sidebar,
+  .theme-toggle-button,
+  .filetree-toggle-button {
+    display: none !important;
+  }
+  
+  .content {
+    margin: 0 !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+}
+
+/* 63. 修复侧边栏定位 - 确保不超出屏幕 */
+@media (min-width: 1400px) {
+  .sidebar {
+    /* 使用 right 定位作为后备，确保不超出 */
+    max-width: var(--dg-sidebar-max-width) !important;
+    
+    /* 如果计算出的位置超出屏幕，使用 right 定位 */
+    @supports not (left: calc(50vw + 100px)) {
+      right: 20px !important;
+      left: auto !important;
+    }
+  }
+  
+  /* 检测是否超出屏幕并调整 */
+  @media (min-width: 1800px) {
+    .sidebar {
+      /* 超大屏幕时，确保侧边栏有足够空间 */
+      max-width: min(var(--dg-sidebar-max-width), calc((100vw - var(--dg-content-max-width) - var(--dg-filetree-width) - var(--dg-filetree-gap) - var(--dg-sidebar-gap) - 40px) * 0.9)) !important;
+    }
+  }
+}
+
+/* 64. 优化内容区域 - 确保不重叠 */
+.content {
+  /* 使用 flexbox 确保正确布局 */
+  display: block;
+  position: relative;
+  z-index: 1;
+  
+  /* 确保内容区域有最小宽度 */
+  min-width: 0;
+}
+
+/* 65. 现代化间距系统 */
+.content {
+  /* 使用更现代的间距比例 */
+  --spacing-xs: 0.5em;
+  --spacing-sm: 0.75em;
+  --spacing-md: 1em;
+  --spacing-lg: 1.5em;
+  --spacing-xl: 2em;
+  --spacing-2xl: 3em;
+}
+
+/* 66. 优化链接跳转体验 - 消除闪烁 */
+html {
+  /* 启用平滑滚动 */
+  scroll-behavior: smooth;
+}
+
+/* 67. 优化页面加载性能 */
+.content {
+  /* 使用 contain 优化渲染性能 */
+  contain: layout style;
+  
+  /* 优化重绘 */
+  will-change: contents;
+}
+
+/* 68. 统一交互反馈 */
+* {
+  /* 统一的点击反馈时间 */
+  -webkit-tap-highlight-color: color-mix(in srgb, var(--text-accent) 15%, transparent);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--text-accent);
+  outline-offset: 2px;
+  border-radius: var(--radius-s);
+}
+
+/* 69. 优化文件树折叠动画 */
+.filetree-sidebar {
+  transition: width var(--transition-slow), padding var(--transition-slow);
+  
+  .filetree-header,
+  .filetree-controls {
+    transition: all var(--transition-slow);
+  }
+}
+
+/* 70. 最终布局检查 - 确保所有元素正确对齐 */
+@media (min-width: 1400px) {
+  /* 确保内容区域居中且不重叠 */
+  .content {
+    margin-left: calc(var(--dg-filetree-width) + var(--dg-filetree-gap)) !important;
+    margin-right: auto !important;
+    max-width: var(--dg-content-max-width) !important;
+    box-sizing: border-box;
+  }
+  
+  /* 有侧边栏时调整 - 确保不重叠 */
+  body:has(.sidebar) .content {
+    margin-right: calc(var(--dg-sidebar-max-width) + var(--dg-sidebar-gap) + 20px) !important;
+    max-width: calc(100vw - var(--dg-filetree-width) - var(--dg-sidebar-max-width) - var(--dg-filetree-gap) - var(--dg-sidebar-gap) - 40px) !important;
+  }
+  
+  /* 折叠状态 */
+  body:has(.filetree-sidebar.filetree-collapsed) .content {
+    margin-left: calc(70px + var(--dg-filetree-gap)) !important;
+  }
+  
+  body:has(.filetree-sidebar.filetree-collapsed):has(.sidebar) .content {
+    margin-right: calc(var(--dg-sidebar-max-width) + var(--dg-sidebar-gap) + 20px) !important;
+    max-width: calc(100vw - 70px - var(--dg-sidebar-max-width) - var(--dg-filetree-gap) - var(--dg-sidebar-gap) - 40px) !important;
+  }
+}
+
+/* 71. 现代化视觉优化 - 统一间距和层次 */
+.content {
+  /* 统一的垂直节奏 */
+  --vertical-rhythm: 1.5em;
+  
+  /* 优化段落和标题的视觉平衡 */
+  > * + * {
+    margin-top: var(--vertical-rhythm);
+  }
+}
+
+/* 72. 优化文件树交互反馈 */
+.notelink {
+  /* 更平滑的交互 */
+  position: relative;
+  
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    background: var(--text-accent);
+    transition: width var(--transition-base);
+    opacity: 0.3;
+  }
+  
+  &.active-note::before {
+    width: 3px;
+  }
+  
+  &:hover::before {
+    width: 2px;
+  }
+}
+
+/* 73. 优化整体视觉一致性 */
+body {
+  /* 统一的背景渐变（可选） */
+  background: var(--background-primary);
+  
+  /* 优化文字渲染 */
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 74. 优化侧边栏内容 */
+.sidebar {
+  /* 确保内容不溢出 */
+  overflow-y: auto;
+  overflow-x: hidden;
+  
+  /* 优化滚动条 */
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--text-muted) 30%, transparent) transparent;
+  
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  &::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
+    border-radius: var(--radius-s);
+    
+    &:hover {
+      background-color: color-mix(in srgb, var(--text-muted) 50%, transparent);
+    }
+  }
+}
+
+/* 75. 最终优化 - 确保所有布局正确 */
+@media (min-width: 1400px) {
+  /* 确保文件树、内容、侧边栏三者不重叠 */
+  .filetree-wrapper {
+    z-index: 10;
+  }
+  
+  .content {
+    z-index: 1;
+    position: relative;
+  }
+  
+  .sidebar {
+    z-index: 3;
+  }
+  
+  /* 确保总宽度不超过屏幕 */
+  body {
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+}
+
 
