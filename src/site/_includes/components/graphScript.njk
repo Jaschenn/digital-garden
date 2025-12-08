@@ -1,6 +1,6 @@
 <script>
     async function fetchGraphData() {
-        const graphData = await fetch('/graph.json').then(res => res.json());
+        const graphData = await fetch('{{ "/graph.json" | url }}').then(res => res.json());
         const fullGraphData  = filterFullGraphData(graphData);
         return {graphData, fullGraphData}
     }

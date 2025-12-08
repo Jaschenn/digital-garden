@@ -580,6 +580,7 @@ module.exports = function (eleventyConfig) {
       output: "dist",
       data: `_data`,
     },
+    pathPrefix: process.env.PATH_PREFIX || "/",
     templateFormats: ["njk", "md", "11ty.js"],
     htmlTemplateEngine: "njk",
     markdownTemplateEngine: false,

@@ -64,7 +64,7 @@ function normalizeUrl(url) {
 }
 
 function getPermalinkMeta(note, key) {
-  let permalink = "/";
+  let permalink = note.url || "/";
   let parts = note.filePathStem.split("/");
   let name = parts[parts.length - 1];
   let noteIcon = process.env.NOTE_ICON_DEFAULT;

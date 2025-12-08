@@ -1,8 +1,17 @@
 # Digital Obsidian Garden
+
 This is the template to be used together with the [Digital Garden Obsidian Plugin](https://github.com/oleeskild/Obsidian-Digital-Garden).
 See the README in the plugin repo for information on how to set it up.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/oleeskild/digitalgarden)
+## GitHub Pages Deployment
+
+This template is configured to deploy directly to **GitHub Pages** using GitHub Actions.
+
+1.  **Repository Settings**: Go to your repository's **Settings** > **Pages**.
+2.  **Build and deployment**: Under "Source", select **GitHub Actions**.
+3.  **Push**: Any push to the `main` branch will trigger a build and deployment.
+
+**Note**: If you are deploying to a user site (e.g., `username.github.io`), the site will be at the root. If you are deploying to a project site (e.g., `username.github.io/repo-name`), the template will automatically handle the path prefix.
 
 ---
 ## Docs
