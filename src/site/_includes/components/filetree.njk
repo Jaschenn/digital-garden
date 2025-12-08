@@ -31,21 +31,34 @@
         
         <div x-show="showFilesMobile && !isDesktop" @click="showFilesMobile = false" style="display:none;" class="fullpage-overlay"></div>
 
-      <div class="filetree-wrapper" x-show.important="isDesktop || showFilesMobile" style="display: none;">
-      <nav class="filetree-sidebar">
+      <div class="filetree-wrapper" x-show.important="isDesktop || showFilesMobile" style="display: none;" x-data="{isCollapsed: $persist(false).as('filetree-collapsed')}">
+      <nav class="filetree-sidebar" :class="{'filetree-collapsed': isCollapsed}">
         {% for imp in dynamics.filetree.beforeTitle %}
             {% include imp %}
         {% endfor %}
-         <a href="/" style="text-decoration: none;">
-               <h1 style="text-align:center;">{{meta.siteName}}</h1>
-         </a>
+        <div class="filetree-header">
+          <a href="/" style="text-decoration: none;">
+            <h1 style="text-align:center;">{{meta.siteName}}</h1>
+          </a>
+          <div class="filetree-controls">
+            <button 
+              class="filetree-toggle-button" 
+              @click="isCollapsed = !isCollapsed"
+              :aria-label="isCollapsed ? '展开目录' : '折叠目录'"
+              :title="isCollapsed ? '展开目录' : '折叠目录'">
+              <i :data-lucide="isCollapsed ? 'chevron-right' : 'chevron-left'" x-show="!isCollapsed"></i>
+              <i :data-lucide="isCollapsed ? 'chevron-right' : 'chevron-left'" x-show="isCollapsed" style="display: none;"></i>
+            </button>
+            {% include "components/themeToggle.njk" %}
+          </div>
+        </div>
          {% for imp in dynamics.filetree.afterTitle %}
             {% include imp %}
         {% endfor %}
         {% if settings.dgEnableSearch === true%}
             {% include "components/searchButton.njk" %}
         {%endif%}
-         <div class="folder" x-data="{isOpen: true}">
+         <div class="folder" x-data="{isOpen: true}" x-show="!isCollapsed">
                {%- for fileOrFolderName, fileOrFolder in filetree -%}
                   {{menuItem(fileOrFolderName, fileOrFolder, 0, fileOrFolderName)}}
                {%- endfor -%}

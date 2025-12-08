@@ -1,4 +1,42 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+// 立即应用主题（在页面渲染前，避免闪烁）
+(function() {
+  const STORAGE_KEY = 'theme-preference';
+  const THEMES = { LIGHT: 'light', DARK: 'dark', AUTO: 'auto' };
+  
+  function getStoredTheme() {
+    try {
+      return localStorage.getItem(STORAGE_KEY) || THEMES.AUTO;
+    } catch {
+      return THEMES.AUTO;
+    }
+  }
+  
+  function getSystemPreference() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+      return THEMES.DARK;
+    }
+    return THEMES.LIGHT;
+  }
+  
+  function getEffectiveTheme() {
+    const stored = getStoredTheme();
+    if (stored === THEMES.AUTO) {
+      return getSystemPreference();
+    }
+    return stored;
+  }
+  
+  function applyTheme() {
+    const theme = getEffectiveTheme();
+    document.documentElement.classList.add(`theme-${theme}`);
+    document.body.classList.add(`theme-${theme}`);
+  }
+  
+  applyTheme();
+})();
+</script>
 <script async type="module">
     import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
 </script>

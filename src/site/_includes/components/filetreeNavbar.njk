@@ -10,6 +10,7 @@
         {% for imp in dynamics.filetree.afterTitle %}
             {% include imp %}
         {% endfor %}
+        {% include "components/themeToggle.njk" %}
     </div>
     
     {% if settings.dgEnableSearch === true%}

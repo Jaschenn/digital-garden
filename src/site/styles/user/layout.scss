@@ -507,8 +507,8 @@ body {
 /* 11. 优化响应式布局 */
 @media (max-width: 1400px) {
   .content {
-    margin-left: 270px;
-    max-width: calc(100vw - 300px) !important;
+    margin-left: calc(var(--dg-filetree-width) + 20px);
+    max-width: calc(100vw - var(--dg-filetree-width) - 50px) !important;
   }
 }
 
@@ -1050,5 +1050,232 @@ button,
       border-width: 2px;
     }
   }
+}
+
+/* 44. 主题切换按钮样式 */
+.theme-toggle-button {
+  background: color-mix(in srgb, var(--background-secondary) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent);
+  border-radius: var(--radius-m);
+  padding: 0.5em 0.75em;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-normal);
+  font-size: 1rem;
+  min-width: 2.5em;
+  min-height: 2.5em;
+  
+  &:hover {
+    background-color: color-mix(in srgb, var(--background-secondary) 80%, transparent);
+    border-color: var(--text-accent);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--text-accent);
+    outline-offset: 2px;
+  }
+  
+  .theme-icon {
+    display: none;
+    width: 1.2em;
+    height: 1.2em;
+  }
+  
+  .theme-icon-light,
+  .theme-icon-dark,
+  .theme-icon-auto {
+    display: inline-block;
+  }
+}
+
+/* 导航栏中的主题切换按钮 */
+.navbar .theme-toggle-button {
+  margin-left: 0.75em;
+}
+
+/* 文件树中的主题切换按钮 */
+.filetree-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-top: 0.75em;
+  justify-content: center;
+}
+
+/* 45. 增加左侧目录宽度 */
+body {
+  --dg-filetree-width: 320px;
+  --dg-filetree-min-width: 320px;
+  
+  @media (max-width: 1400px) {
+    --dg-filetree-width: 300px;
+    --dg-filetree-min-width: 300px;
+  }
+  
+  @media (max-width: 1000px) {
+    --dg-filetree-width: 250px;
+    --dg-filetree-min-width: 250px;
+  }
+}
+
+/* 调整文件树包装器宽度 */
+.filetree-wrapper {
+  @media (min-width: 1400px) {
+    width: calc(50vw - calc(var(--dg-content-max-width) / 2) - var(--dg-filetree-gap)) !important;
+    min-width: var(--dg-filetree-min-width) !important;
+    
+    /* 折叠状态 */
+    &:has(.filetree-sidebar.filetree-collapsed) {
+      width: 80px !important;
+      min-width: 80px !important;
+    }
+  }
+  
+  @media (max-width: 1399px) and (min-width: 1000px) {
+    &:has(.filetree-sidebar.filetree-collapsed) {
+      width: 60px !important;
+      min-width: 60px !important;
+    }
+  }
+}
+
+/* 46. 文件树折叠功能 */
+.filetree-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75em;
+  margin-bottom: 1em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+}
+
+.filetree-toggle-button {
+  background: color-mix(in srgb, var(--background-secondary) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent);
+  border-radius: var(--radius-m);
+  padding: 0.4em 0.6em;
+  cursor: pointer;
+  transition: all var(--transition-base);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-normal);
+  font-size: 0.9rem;
+  min-width: 2em;
+  min-height: 2em;
+  
+  &:hover {
+    background-color: color-mix(in srgb, var(--background-secondary) 80%, transparent);
+    border-color: var(--text-accent);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--text-accent);
+    outline-offset: 2px;
+  }
+  
+  i {
+    width: 1em;
+    height: 1em;
+  }
+}
+
+/* 文件树折叠状态 */
+.filetree-wrapper {
+  transition: width var(--transition-slow);
+}
+
+.filetree-sidebar.filetree-collapsed {
+  width: 80px !important;
+  min-width: 80px;
+  padding: 0.75em 0.5em !important;
+  
+  .filetree-header {
+    padding: 0.5em 0;
+    margin-bottom: 0.75em;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+    
+    h1 {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 0.85rem !important;
+      margin: 0;
+      max-width: 100%;
+      overflow: hidden;
+      text-align: center;
+      line-height: 1.2;
+    }
+  }
+  
+  .filetree-controls {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5em;
+    margin-top: 0.5em;
+  }
+  
+  .theme-toggle-button,
+  .filetree-toggle-button {
+    width: 100%;
+    min-width: auto;
+    padding: 0.5em;
+  }
+  
+  .search-button {
+    display: none;
+  }
+  
+  .folder {
+    display: none;
+  }
+}
+
+/* 响应式调整 */
+@media (max-width: 1400px) {
+  .filetree-sidebar.filetree-collapsed {
+    width: 60px !important;
+    min-width: 60px;
+    
+    .filetree-header h1 {
+      font-size: 0.7rem !important;
+    }
+  }
+}
+
+/* 47. 调整内容区域以适应折叠的文件树 */
+@media (min-width: 1400px) {
+  .filetree-wrapper:has(.filetree-sidebar.filetree-collapsed) ~ .content,
+  body:has(.filetree-sidebar.filetree-collapsed) .content {
+    margin-left: calc(80px + 20px) !important;
+  }
+}
+
+@media (max-width: 1399px) and (min-width: 1000px) {
+  .filetree-wrapper:has(.filetree-sidebar.filetree-collapsed) ~ .content,
+  body:has(.filetree-sidebar.filetree-collapsed) .content {
+    margin-left: calc(60px + 20px) !important;
+  }
+}
+
+/* 48. 优化文件树标题区域 */
+.filetree-sidebar h1 {
+  transition: all var(--transition-slow);
+  margin-bottom: 0.5em;
 }
 
