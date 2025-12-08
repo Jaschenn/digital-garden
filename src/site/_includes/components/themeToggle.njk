@@ -2,15 +2,13 @@
   id="theme-toggle" 
   class="theme-toggle-button"
   aria-label="切换主题"
-  title="切换亮色/暗色主题">
+  title="切换主题">
   <i data-lucide="sun" class="theme-icon theme-icon-light"></i>
   <i data-lucide="moon" class="theme-icon theme-icon-dark"></i>
-  <i data-lucide="monitor" class="theme-icon theme-icon-auto"></i>
 </button>
 
 <script>
 (function() {
-  // 主题管理
   const ThemeManager = {
     STORAGE_KEY: 'theme-preference',
     THEMES: {
@@ -20,44 +18,23 @@
     },
     
     init() {
-      // 立即应用主题（避免闪烁）
       this.applyTheme();
-      // 设置按钮
       this.setupToggle();
-      // 确保图标加载
-      this.ensureIconsLoaded();
-      // 监听系统偏好变化
       this.watchSystemPreference();
-      
-      // 在 lucide 加载后再次确保图标显示
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => {
-          setTimeout(() => this.ensureIconsLoaded(), 100);
-        });
-      } else {
-        setTimeout(() => this.ensureIconsLoaded(), 100);
-      }
     },
     
     getStoredTheme() {
-      try {
-        return localStorage.getItem(this.STORAGE_KEY) || this.THEMES.AUTO;
-      } catch {
-        return this.THEMES.AUTO;
-      }
+      return localStorage.getItem(this.STORAGE_KEY) || this.THEMES.AUTO;
     },
     
     setStoredTheme(theme) {
-      try {
-        localStorage.setItem(this.STORAGE_KEY, theme);
-      } catch {}
+      localStorage.setItem(this.STORAGE_KEY, theme);
     },
     
     getSystemPreference() {
-      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        return this.THEMES.DARK;
-      }
-      return this.THEMES.LIGHT;
+      return window.matchMedia('(prefers-color-scheme: dark)').matches 
+        ? this.THEMES.DARK 
+        : this.THEMES.LIGHT;
     },
     
     getEffectiveTheme() {
@@ -70,98 +47,30 @@
     
     applyTheme() {
       const theme = this.getEffectiveTheme();
-      const body = document.body;
-      const html = document.documentElement;
+      document.body.classList.remove('theme-light', 'theme-dark');
+      document.body.classList.add(`theme-${theme}`);
       
-      // 移除所有主题类
-      body.classList.remove('theme-light', 'theme-dark');
-      html.classList.remove('theme-light', 'theme-dark');
-      
-      // 添加当前主题类
-      body.classList.add(`theme-${theme}`);
-      html.classList.add(`theme-${theme}`);
-      
-      // 更新按钮状态
-      this.updateButtonState(this.getStoredTheme());
-    },
-    
-    updateButtonState(theme) {
-      const button = document.getElementById('theme-toggle');
-      if (!button) return;
-      
-      const icons = {
-        light: button.querySelector('.theme-icon-light'),
-        dark: button.querySelector('.theme-icon-dark'),
-        auto: button.querySelector('.theme-icon-auto')
-      };
-      
-      // 隐藏所有图标 - 使用 display 和 opacity 双重控制
-      Object.values(icons).forEach(icon => {
-        if (icon) {
-          icon.style.opacity = '0';
-          icon.style.display = 'none';
-          icon.style.visibility = 'hidden';
-        }
-      });
-      
-      // 显示当前主题图标
-      if (icons[theme]) {
-        icons[theme].style.opacity = '1';
-        icons[theme].style.display = 'flex';
-        icons[theme].style.visibility = 'visible';
-      }
-      
-      // 更新标题
-      const titles = {
-        light: '当前：亮色模式（点击切换到暗色）',
-        dark: '当前：暗色模式（点击切换到自动）',
-        auto: '当前：自动模式（点击切换到亮色）'
-      };
-      button.title = titles[theme] || '切换主题';
-      
-      // 确保 lucide 图标已初始化
-      this.ensureIconsLoaded();
-    },
-    
-    ensureIconsLoaded() {
-      const button = document.getElementById('theme-toggle');
-      if (!button) return;
-      
-      // 如果 lucide 已加载，立即初始化
-      if (window.lucide) {
-        try {
-          window.lucide.createIcons();
-        } catch (e) {
-          console.warn('Failed to create icons:', e);
-        }
-      } else {
-        // 等待 lucide 加载
-        const checkLucide = setInterval(() => {
-          if (window.lucide) {
-            try {
-              window.lucide.createIcons();
-            } catch (e) {
-              console.warn('Failed to create icons:', e);
-            }
-            clearInterval(checkLucide);
-          }
-        }, 50);
-        
-        // 10秒后停止检查
-        setTimeout(() => clearInterval(checkLucide), 10000);
+      // 更新图标状态（通过 CSS 类控制显示隐藏，所以这里只负责切换状态类）
+      const btn = document.getElementById('theme-toggle');
+      if(btn) {
+         if (theme === 'dark') {
+             btn.classList.add('is-dark');
+             btn.classList.remove('is-light');
+         } else {
+             btn.classList.add('is-light');
+             btn.classList.remove('is-dark');
+         }
       }
     },
     
     cycleTheme() {
       const current = this.getStoredTheme();
+      // 简化逻辑：只在 Light 和 Dark 之间切换，或者 Auto -> Opposite
       let next;
-      
-      if (current === this.THEMES.LIGHT) {
-        next = this.THEMES.DARK;
-      } else if (current === this.THEMES.DARK) {
-        next = this.THEMES.AUTO;
+      if (current === this.THEMES.AUTO) {
+          next = this.getSystemPreference() === this.THEMES.DARK ? this.THEMES.LIGHT : this.THEMES.DARK;
       } else {
-        next = this.THEMES.LIGHT;
+          next = current === this.THEMES.DARK ? this.THEMES.LIGHT : this.THEMES.DARK;
       }
       
       this.setStoredTheme(next);
@@ -170,19 +79,14 @@
     
     setupToggle() {
       const button = document.getElementById('theme-toggle');
-      if (!button) return;
-      
-      button.addEventListener('click', () => {
-        this.cycleTheme();
-      });
+      if (button) {
+        button.addEventListener('click', () => this.cycleTheme());
+      }
     },
     
     watchSystemPreference() {
       if (!window.matchMedia) return;
-      
-      const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-      mediaQuery.addEventListener('change', () => {
-        // 只有在自动模式下才响应系统变化
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
         if (this.getStoredTheme() === this.THEMES.AUTO) {
           this.applyTheme();
         }
@@ -190,20 +94,6 @@
     }
   };
   
-  // 立即初始化主题（避免闪烁）
   ThemeManager.init();
-  
-  // 监听 lucide 加载
-  if (window.lucide) {
-    window.lucide.createIcons();
-  }
-  
-  window.addEventListener('load', () => {
-    if (window.lucide) {
-      window.lucide.createIcons();
-    }
-    ThemeManager.ensureIconsLoaded();
-  });
 })();
 </script>
-
