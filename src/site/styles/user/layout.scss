@@ -1402,10 +1402,34 @@ body {
   scroll-padding-top: 100px;
 }
 
-/* 55. 优化文件树交互 */
+/* 55. 优化文件树交互 - 消除闪烁 */
+.filetree-wrapper,
+.filetree-sidebar {
+  /* 防止文件树在导航时闪烁 */
+  will-change: auto;
+  transform: translateZ(0); /* 启用硬件加速 */
+  backface-visibility: hidden;
+  perspective: 1000px;
+  /* 确保文件树在导航时保持稳定 */
+  isolation: isolate;
+  contain: layout style;
+}
+
+.folder {
+  /* 文件夹容器也保持稳定 */
+  will-change: auto;
+  transform: translateZ(0);
+}
+
 .notelink {
   /* 平滑过渡，避免闪烁 */
-  transition: all var(--transition-fast);
+  transition: background-color var(--transition-base), border-left-color var(--transition-base), border-left-width var(--transition-base);
+  will-change: background-color, border-left-color, border-left-width;
+  
+  /* 确保活动状态变化平滑 */
+  &.active-note {
+    transition: background-color var(--transition-base), border-left-color var(--transition-base), border-left-width var(--transition-base);
+  }
   
   a {
     /* 优化链接点击 */
@@ -1649,31 +1673,7 @@ a:focus-visible {
   }
 }
 
-/* 72. 优化文件树交互反馈 */
-.notelink {
-  /* 更平滑的交互 */
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 0;
-    background: var(--text-accent);
-    transition: width var(--transition-base);
-    opacity: 0.3;
-  }
-  
-  &.active-note::before {
-    width: 3px;
-  }
-  
-  &:hover::before {
-    width: 2px;
-  }
-}
+/* 72. 优化文件树交互反馈 - 已整合到上面的样式中 */
 
 /* 73. 优化整体视觉一致性 */
 body {

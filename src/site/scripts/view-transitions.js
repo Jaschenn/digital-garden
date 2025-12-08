@@ -50,11 +50,19 @@
       event.preventDefault();
       isNavigating = true;
       
-      // 添加过渡效果
+      // 添加过渡效果 - 只影响内容区域，不影响文件树
       const content = document.querySelector('.content');
+      const filetreeWrapper = document.querySelector('.filetree-wrapper');
+      
       if (content) {
         content.style.opacity = '0.6';
         content.style.transition = 'opacity 0.15s ease-out';
+      }
+      
+      // 确保文件树保持可见，不闪烁
+      if (filetreeWrapper) {
+        filetreeWrapper.style.opacity = '1';
+        filetreeWrapper.style.pointerEvents = 'auto';
       }
       
       try {
@@ -133,8 +141,17 @@
         // 滚动到顶部
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
-        // 更新活动状态（如果有）
-        updateActiveState(url.pathname);
+        // 确保文件树保持稳定
+        const filetreeWrapper = document.querySelector('.filetree-wrapper');
+        if (filetreeWrapper) {
+          filetreeWrapper.style.opacity = '1';
+          filetreeWrapper.style.pointerEvents = 'auto';
+        }
+        
+        // 更新活动状态（如果有）- 延迟执行，确保内容已更新
+        setTimeout(() => {
+          updateActiveState(url.pathname);
+        }, 50);
         
         // 重新初始化页面脚本（如果需要）
         reinitializeScripts();
@@ -228,27 +245,50 @@
   }
   
   function updateActiveState(pathname) {
-    // 更新文件树中的活动状态
-    try {
-      document.querySelectorAll('.notelink').forEach(link => {
-        if (!link) return;
+    // 更新文件树中的活动状态 - 使用 requestAnimationFrame 确保平滑过渡
+    requestAnimationFrame(() => {
+      try {
+        const filetreeWrapper = document.querySelector('.filetree-wrapper');
+        if (!filetreeWrapper) return;
         
-        try {
-          link.classList.remove('active-note');
-          const linkAnchor = link.querySelector('a');
-          if (linkAnchor && linkAnchor.href) {
-            const linkUrl = new URL(linkAnchor.href, window.location.href);
-            if (linkUrl.pathname === pathname) {
-              link.classList.add('active-note');
+        // 使用 will-change 优化性能
+        filetreeWrapper.style.willChange = 'contents';
+        
+        document.querySelectorAll('.notelink').forEach(link => {
+          if (!link) return;
+          
+          try {
+            const linkAnchor = link.querySelector('a');
+            if (linkAnchor && linkAnchor.href) {
+              const linkUrl = new URL(linkAnchor.href, window.location.href);
+              const shouldBeActive = linkUrl.pathname === pathname;
+              const isActive = link.classList.contains('active-note');
+              
+              // 只在状态改变时更新，避免不必要的 DOM 操作
+              if (shouldBeActive && !isActive) {
+                link.classList.add('active-note');
+              } else if (!shouldBeActive && isActive) {
+                link.classList.remove('active-note');
+              }
+            } else {
+              // 如果没有链接，确保移除活动状态
+              link.classList.remove('active-note');
             }
+          } catch (e) {
+            console.warn('Error updating link state:', e);
           }
-        } catch (e) {
-          console.warn('Error updating link state:', e);
-        }
-      });
-    } catch (e) {
-      console.warn('Error in updateActiveState:', e);
-    }
+        });
+        
+        // 恢复 will-change
+        requestAnimationFrame(() => {
+          if (filetreeWrapper) {
+            filetreeWrapper.style.willChange = 'auto';
+          }
+        });
+      } catch (e) {
+        console.warn('Error in updateActiveState:', e);
+      }
+    });
   }
   
   function reinitializeScripts() {
