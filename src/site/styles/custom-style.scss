@@ -1,13 +1,58 @@
+/* ========================
+   1. 字体声明（全局字体）
+   ======================== */
+
+/* JetBrains Mono Nerd Font (Regular) */
+@font-face {
+  font-family: "JetBrainsMonoNerd";
+  src: url("/fonts/JetBrainsMono-Regular-Nerd.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* 上图东观体：Regular */
+@font-face {
+  font-family: "DongGuanTi";
+  src: url("/fonts/DongGuanTi-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  unicode-range: U+4E00-9FFF; /* 只用于中文 */
+}
+
+/* 上图东观体：Bold */
+@font-face {
+  font-family: "DongGuanTi";
+  src: url("/fonts/DongGuanTi-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  unicode-range: U+4E00-9FFF;
+}
+
+/* 上图东观体：Light */
+@font-face {
+  font-family: "DongGuanTi";
+  src: url("/fonts/DongGuanTi-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  unicode-range: U+4E00-9FFF;
+}
+
+
+/* ========================
+   2. 网站字体应用
+   ======================== */
+
 body {
-    /***
-      ADD YOUR CUSTOM STYLING HERE. (INSIDE THE body {...} section.)
-      IT WILL TAKE PRECEDENCE OVER THE STYLING IN THE STYLE.CSS FILE.
-   ***/
-    //  background-color: white;
-    //  .content {
-    //   font-size: 14px;
-    //  }
-    //  h1 {
-    //   color: black;
-    //  }
+  /* 优先使用 JetBrainsMonoNerd，中文 fallback 用东观体 */
+  font-family: "JetBrainsMonoNerd", "DongGuanTi", sans-serif;
+
+  /* 标题字体 */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: "JetBrainsMonoNerd", "DongGuanTi", sans-serif;
+  }
+
+  /* 代码字体（强制等宽） */
+  code, pre {
+    font-family: "JetBrainsMonoNerd", monospace !important;
+  }
 }
