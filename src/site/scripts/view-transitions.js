@@ -66,8 +66,9 @@
         const parser = new DOMParser();
         const doc = parser.parseFromString(html, 'text/html');
         
-        // 提取新页面的内容区域
+        // 提取新页面的内容区域和侧边栏
         const newContent = doc.querySelector('.content');
+        const newSidebar = doc.querySelector('.sidebar');
         if (!newContent) {
           // 如果新页面没有内容区域，使用传统跳转
           window.location.href = url.href;
@@ -93,6 +94,40 @@
             currentContent.style.transition = 'opacity 0.2s ease-in';
             currentContent.style.opacity = '1';
           });
+        }
+        
+        // 更新侧边栏（如果有）
+        if (newSidebar) {
+          const currentSidebar = document.querySelector('.sidebar');
+          if (currentSidebar) {
+            // 清理旧的 graph 实例
+            if (window.graph && typeof window.graph._destructor === 'function') {
+              try {
+                window.graph._destructor();
+              } catch (e) {
+                console.warn('Graph cleanup error:', e);
+              }
+              window.graph = null;
+            }
+            
+            // 更新侧边栏内容
+            currentSidebar.innerHTML = newSidebar.innerHTML;
+            
+            // 重新初始化侧边栏中的 Alpine.js 组件
+            if (window.Alpine) {
+              // 等待 DOM 更新后再初始化
+              requestAnimationFrame(() => {
+                if (window.Alpine) {
+                  try {
+                    // 重新初始化整个侧边栏树
+                    window.Alpine.initTree(currentSidebar);
+                  } catch (e) {
+                    console.warn('Alpine init error:', e);
+                  }
+                }
+              });
+            }
+          }
         }
         
         // 滚动到顶部
@@ -132,6 +167,8 @@
         const doc = parser.parseFromString(html, 'text/html');
         
         const newContent = doc.querySelector('.content');
+        const newSidebar = doc.querySelector('.sidebar');
+        
         if (newContent) {
           const currentContent = document.querySelector('.content');
           if (currentContent) {
@@ -141,6 +178,37 @@
               currentContent.style.transition = 'opacity 0.2s ease-in';
               currentContent.style.opacity = '1';
             });
+          }
+        }
+        
+        // 更新侧边栏（如果有）
+        if (newSidebar) {
+          const currentSidebar = document.querySelector('.sidebar');
+          if (currentSidebar) {
+            // 清理旧的 graph 实例
+            if (window.graph && typeof window.graph._destructor === 'function') {
+              try {
+                window.graph._destructor();
+              } catch (e) {
+                console.warn('Graph cleanup error:', e);
+              }
+              window.graph = null;
+            }
+            
+            currentSidebar.innerHTML = newSidebar.innerHTML;
+            
+            // 重新初始化侧边栏中的 Alpine.js 组件
+            if (window.Alpine) {
+              requestAnimationFrame(() => {
+                if (window.Alpine) {
+                  try {
+                    window.Alpine.initTree(currentSidebar);
+                  } catch (e) {
+                    console.warn('Alpine init error:', e);
+                  }
+                }
+              });
+            }
           }
         }
         
@@ -161,32 +229,63 @@
   
   function updateActiveState(pathname) {
     // 更新文件树中的活动状态
-    document.querySelectorAll('.notelink').forEach(link => {
-      link.classList.remove('active-note');
-      const linkAnchor = link.querySelector('a');
-      if (linkAnchor) {
-        const linkUrl = new URL(linkAnchor.href, window.location.href);
-        if (linkUrl.pathname === pathname) {
-          link.classList.add('active-note');
+    try {
+      document.querySelectorAll('.notelink').forEach(link => {
+        if (!link) return;
+        
+        try {
+          link.classList.remove('active-note');
+          const linkAnchor = link.querySelector('a');
+          if (linkAnchor && linkAnchor.href) {
+            const linkUrl = new URL(linkAnchor.href, window.location.href);
+            if (linkUrl.pathname === pathname) {
+              link.classList.add('active-note');
+            }
+          }
+        } catch (e) {
+          console.warn('Error updating link state:', e);
         }
-      }
-    });
+      });
+    } catch (e) {
+      console.warn('Error in updateActiveState:', e);
+    }
   }
   
   function reinitializeScripts() {
     // 重新初始化可能需要重新运行的脚本
     // 例如：代码高亮、数学公式等
     if (window.Prism) {
-      window.Prism.highlightAll();
+      try {
+        window.Prism.highlightAll();
+      } catch (e) {
+        console.warn('Prism highlight error:', e);
+      }
     }
     
     // 重新初始化 lucide 图标
     if (window.lucide) {
-      window.lucide.createIcons();
+      try {
+        window.lucide.createIcons();
+      } catch (e) {
+        console.warn('Lucide icons error:', e);
+      }
+    }
+    
+    // 清理旧的 graph 实例
+    if (window.graph && typeof window.graph._destructor === 'function') {
+      try {
+        window.graph._destructor();
+        window.graph = null;
+      } catch (e) {
+        console.warn('Graph cleanup error:', e);
+      }
     }
     
     // 触发自定义事件，让其他脚本知道内容已更新
-    window.dispatchEvent(new CustomEvent('contentUpdated'));
+    // 延迟触发，确保 DOM 已更新
+    setTimeout(() => {
+      window.dispatchEvent(new CustomEvent('contentUpdated'));
+    }, 100);
   }
   
   // 页面可见性变化时优化
