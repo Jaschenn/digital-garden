@@ -1,0 +1,56 @@
+/* 1. 字体声明 */
+
+/* JetBrains Mono Nerd Font (Regular) */
+@font-face {
+  font-family: "JetBrainsMonoNerd";
+  src: url("/fonts/JetBrainsMono-Regular-Nerd.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* 上图东观体：Regular */
+@font-face {
+  font-family: "DongGuanTi";
+  src: url("/fonts/DongGuanTi-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  unicode-range: U+4E00-9FFF;
+}
+
+/* 上图东观体：Bold */
+@font-face {
+  font-family: "DongGuanTi";
+  src: url("/fonts/DongGuanTi-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  unicode-range: U+4E00-9FFF;
+}
+
+/* 上图东观体：Light */
+@font-face {
+  font-family: "DongGuanTi";
+  src: url("/fonts/DongGuanTi-Light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  unicode-range: U+4E00-9FFF;
+}
+
+/* 2. 应用到全站 */
+
+body {
+  font-family: "JetBrainsMonoNerd", "DongGuanTi", sans-serif !important;
+}
+
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6 {
+  font-family: "JetBrainsMonoNerd", "DongGuanTi", sans-serif !important;
+}
+
+body pre,
+body code {
+  font-family: "JetBrainsMonoNerd", monospace !important;
+}
