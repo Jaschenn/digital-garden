@@ -380,3 +380,84 @@ body {
   }
 }
 
+/* 15. 确保文件树正常显示 - 修复可能的样式冲突 */
+.filetree-wrapper {
+  /* 确保文件树容器正常显示 */
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.filetree-sidebar {
+  /* 确保文件树侧边栏正常显示 */
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  
+  /* 确保文件夹和笔记链接正常显示 */
+  .folder {
+    display: block !important;
+    visibility: visible !important;
+  }
+  
+  .notelink {
+    display: flex !important;
+    visibility: visible !important;
+  }
+  
+  .filename {
+    display: inline-block !important;
+    visibility: visible !important;
+  }
+  
+  /* 确保折叠/展开图标正常显示 */
+  .foldername-wrapper {
+    display: flex !important;
+    visibility: visible !important;
+    
+    i, svg {
+      display: inline-block !important;
+      visibility: visible !important;
+    }
+  }
+}
+
+/* 16. 修复文件树活动状态样式 */
+.filetree-sidebar .notelink.active-note {
+  background-color: color-mix(in srgb, var(--text-accent) 20%, transparent) !important;
+  border-left-color: var(--text-accent) !important;
+  border-left-width: 3px !important;
+  border-radius: 4px;
+  
+  .filename {
+    color: var(--text-normal) !important;
+    font-weight: 600 !important;
+  }
+}
+
+/* 17. 确保文件树文字颜色正确 */
+.filetree-sidebar {
+  color: var(--text-muted) !important;
+  
+  .filename {
+    color: var(--text-muted) !important;
+    
+    &:hover {
+      color: var(--text-normal) !important;
+    }
+  }
+  
+  .foldername {
+    color: var(--text-muted) !important;
+  }
+}
+
+/* 18. 修复文件树背景色 */
+.filetree-wrapper {
+  background-color: var(--background-secondary) !important;
+}
+
+.filetree-sidebar {
+  background-color: transparent !important;
+}
+
