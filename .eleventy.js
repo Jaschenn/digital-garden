@@ -34,6 +34,13 @@ function getAnchorLink(filePath, linkTitle) {
   return `<a ${Object.keys(attributes).map(key => `${key}="${attributes[key]}"`).join(" ")}>${innerHTML}</a>`;
 }
 
+// 规范化 URL，去除双斜杠
+function normalizeUrl(url) {
+  if (!url) return url;
+  // 替换多个连续斜杠为单个斜杠，但保留开头的双斜杠（如 http://）
+  return url.replace(/([^:]\/)\/+/g, "$1");
+}
+
 function getAnchorAttributes(filePath, linkTitle) {
   let fileName = filePath.replaceAll("&amp;", "&");
   let header = "";
@@ -55,7 +62,7 @@ function getAnchorAttributes(filePath, linkTitle) {
     const file = fs.readFileSync(fullPath, "utf8");
     const frontMatter = matter(file);
     if (frontMatter.data.permalink) {
-      permalink = frontMatter.data.permalink;
+      permalink = normalizeUrl(frontMatter.data.permalink);
     }
     if (
       frontMatter.data.tags &&
@@ -85,7 +92,7 @@ function getAnchorAttributes(filePath, linkTitle) {
       "class": "internal-link",
       "target": "",
       "data-note-icon": noteIcon,
-      "href": `${permalink}${headerLinkPath}`,
+      "href": normalizeUrl(`${permalink}${headerLinkPath}`),
     },
     innerHTML: title,
   }

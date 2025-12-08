@@ -2,6 +2,27 @@
    生产级布局优化样式
    ======================== */
 
+/* 设计系统：统一的圆角、间距、过渡 */
+:root {
+  /* 圆角系统（与 obsidian-base 保持一致） */
+  --radius-xs: 2px;
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --radius-l: 12px;
+  --radius-xl: 16px;
+  
+  /* 过渡动画 */
+  --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* 阴影系统 */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-base: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.16), 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
 /* 1. 增加内容区域宽度，充分利用屏幕空间 */
 body {
   /* 默认值：根据屏幕宽度动态调整 */
@@ -60,10 +81,10 @@ body {
   height: auto !important;
   display: block;
   margin: 2em auto;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
+  border-radius: var(--radius-l);
+  box-shadow: var(--shadow-md);
   box-sizing: border-box;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transition: transform var(--transition-slow), box-shadow var(--transition-slow);
   background-color: color-mix(in srgb, var(--background-secondary) 30%, transparent);
 }
 
@@ -72,7 +93,7 @@ body {
 .markdown-preview-view img:hover,
 .markdown-rendered img:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16), 0 4px 8px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-lg);
 }
 
 /* 确保图片容器也不会超出 */
@@ -104,7 +125,7 @@ body {
   margin: 0.5em 0.5em 0.5em 0;
   vertical-align: middle;
   max-width: 100%;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
   box-shadow: none;
   
   &:hover {
@@ -117,7 +138,7 @@ body {
   /* 使用更细、更柔和的竖线 */
   border-left: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent) !important;
   margin-left: var(--dg-filelist-margin);
-  transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: border-color var(--transition-slow);
   position: relative;
   
   /* 添加微妙的渐变效果 */
@@ -136,7 +157,7 @@ body {
       transparent 100%
     );
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity var(--transition-slow);
   }
   
   &:hover::before {
@@ -155,6 +176,17 @@ body {
   padding-right: 3rem;
   line-height: 1.75;
   letter-spacing: 0.01em;
+  
+  /* 大屏幕增加更多 padding */
+  @media (min-width: 1600px) {
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+  
+  @media (min-width: 1400px) and (max-width: 1599px) {
+    padding-left: 4rem;
+    padding-right: 4rem;
+  }
   
   @media (max-width: 1200px) {
     padding-left: 2.5rem;
@@ -240,7 +272,7 @@ body {
   /* 代码块间距和样式 */
   pre {
     margin: 2em 0;
-    border-radius: 12px;
+    border-radius: var(--radius-l);
     overflow-x: auto;
     padding: 1.5em;
     background-color: color-mix(in srgb, var(--background-secondary) 60%, transparent);
@@ -259,7 +291,7 @@ body {
     
     &::-webkit-scrollbar-thumb {
       background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
-      border-radius: 4px;
+      border-radius: var(--radius-s);
       
       &:hover {
         background-color: color-mix(in srgb, var(--text-muted) 50%, transparent);
@@ -267,18 +299,27 @@ body {
     }
   }
   
-  /* 引用块间距和样式 */
+  /* 引用块间距和样式 - 覆盖 style.scss 中的样式 */
   blockquote {
-    margin: 2em 0;
-    padding: 1.25em 1.75em;
-    border-radius: 8px;
-    border-left: 4px solid var(--text-accent);
-    background-color: color-mix(in srgb, var(--background-secondary) 40%, transparent);
+    margin: 2em 0 !important;
+    padding: 1.25em 1.75em !important;
+    border-radius: var(--radius-m) !important;
+    border-left: 4px solid var(--text-accent) !important;
+    background-color: color-mix(in srgb, var(--background-secondary) 40%, transparent) !important;
     font-style: italic;
     position: relative;
+    border-right: none !important;
+    border-top: none !important;
+    border-bottom: none !important;
+    quotes: none !important;
+    
+    &::before {
+      display: none !important;
+    }
     
     p {
       margin-bottom: 0.75em;
+      display: block !important;
       
       &:last-child {
         margin-bottom: 0;
@@ -296,9 +337,9 @@ body {
   margin: 2em 0;
   border-collapse: separate;
   border-spacing: 0;
-  border-radius: 8px;
+  border-radius: var(--radius-m);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-base);
   
   /* 表格容器 */
   &::before {
@@ -311,7 +352,7 @@ body {
     padding: 0.875em 1.25em;
     border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
     text-align: left;
-    transition: background-color 0.2s ease;
+    transition: background-color var(--transition-base);
   }
   
   th {
@@ -375,7 +416,7 @@ body {
     
     &::-webkit-scrollbar-thumb {
       background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
-      border-radius: 3px;
+      border-radius: var(--radius-xs);
       
       &:hover {
         background-color: color-mix(in srgb, var(--text-muted) 50%, transparent);
@@ -389,7 +430,7 @@ body {
   text-decoration: none;
   color: var(--link-color, var(--text-accent));
   border-bottom: 1.5px solid color-mix(in srgb, var(--link-color, var(--text-accent)) 25%, transparent);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-base);
   font-weight: 500;
   position: relative;
   
@@ -401,7 +442,7 @@ body {
   &:focus-visible {
     outline: 2px solid var(--text-accent);
     outline-offset: 2px;
-    border-radius: 2px;
+    border-radius: var(--radius-xs);
   }
   
   /* 内部链接特殊样式 */
@@ -416,7 +457,7 @@ body {
       margin-left: 0.25em;
       font-size: 0.85em;
       opacity: 0.6;
-      transition: opacity 0.2s ease, transform 0.2s ease;
+      transition: opacity var(--transition-base), transform var(--transition-base);
       display: inline-block;
     }
     
@@ -442,20 +483,24 @@ body {
   }
 }
 
-.content code:not(pre code) {
-  padding: 0.25em 0.5em;
-  border-radius: 6px;
-  background-color: color-mix(in srgb, var(--background-secondary) 60%, transparent);
-  font-size: 0.875em;
-  font-family: "JetBrainsMonoNerd", monospace;
-  color: var(--text-accent);
-  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
-  font-weight: 500;
-  transition: all 0.2s ease;
+/* 内联代码样式 - 覆盖 style.scss 中的硬编码样式 */
+.content code:not(pre code),
+.content p > code,
+.markdown-preview-view code:not(pre code),
+.markdown-rendered code:not(pre code) {
+  padding: 0.25em 0.5em !important;
+  border-radius: var(--radius-s) !important;
+  background-color: color-mix(in srgb, var(--background-secondary) 60%, transparent) !important;
+  font-size: 0.875em !important;
+  font-family: "JetBrainsMonoNerd", monospace !important;
+  color: var(--text-accent) !important;
+  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent) !important;
+  font-weight: 500 !important;
+  transition: all var(--transition-base) !important;
   
   &:hover {
-    background-color: color-mix(in srgb, var(--background-secondary) 70%, transparent);
-    border-color: color-mix(in srgb, var(--text-muted) 25%, transparent);
+    background-color: color-mix(in srgb, var(--background-secondary) 70%, transparent) !important;
+    border-color: color-mix(in srgb, var(--text-muted) 25%, transparent) !important;
   }
 }
 
@@ -497,9 +542,9 @@ body {
 
 /* 13. 优化文件树链接样式 */
 .notelink {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 6px;
+  border-radius: var(--radius-s);
   margin: 2px 0;
+  transition: all var(--transition-base);
   
   &:hover {
     background-color: color-mix(in srgb, var(--text-accent) 8%, transparent) !important;
@@ -519,7 +564,7 @@ body {
   
   a {
     border-bottom: none;
-    transition: color 0.2s ease;
+    transition: color var(--transition-base);
     
     &:hover {
       color: var(--text-accent);
@@ -529,8 +574,8 @@ body {
 
 /* 14. 优化文件夹样式 */
 .foldername-wrapper {
-  transition: all 0.2s ease;
-  border-radius: 6px;
+  transition: all var(--transition-base);
+  border-radius: var(--radius-s);
   padding: 4px 8px;
   margin: 4px 0;
   
@@ -546,7 +591,7 @@ body {
 /* 15. 优化侧边栏组件 */
 .sidebar {
   /* 平滑过渡 */
-  transition: opacity 0.3s ease;
+  transition: opacity var(--transition-slow);
 }
 
 .sidebar-container {
@@ -561,10 +606,10 @@ body {
     padding-left: 1em;
     
     li {
-      a {
-        border-bottom: none;
-        color: var(--text-muted);
-        transition: color 0.2s ease, transform 0.2s ease;
+        a {
+          border-bottom: none;
+          color: var(--text-muted);
+          transition: color var(--transition-base), transform var(--transition-base);
         display: inline-block;
         
         &:hover {
@@ -576,16 +621,16 @@ body {
   }
 }
 
-/* 17. 优化引用和 Callout */
+/* 17. 优化引用和 Callout - 统一圆角 */
 .content .callout {
-  border-radius: 10px;
+  border-radius: var(--radius-m) !important;
   margin: 2em 0;
   padding: 1.25em 1.5em;
   border-left-width: 4px;
-  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  transition: box-shadow var(--transition-slow), transform var(--transition-base);
   
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--shadow-md);
     transform: translateY(-1px);
   }
 }
@@ -627,7 +672,7 @@ body {
 *:focus-visible {
   outline: 2px solid var(--text-accent);
   outline-offset: 2px;
-  border-radius: 4px;
+  border-radius: var(--radius-s);
 }
 
 /* 20. 优化加载和过渡效果 */
@@ -672,12 +717,12 @@ body {
 .search-box {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-lg), 0 8px 16px rgba(0, 0, 0, 0.2);
   border: 1px solid color-mix(in srgb, var(--text-muted) 10%, transparent);
 }
 
 .search-box input {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all var(--transition-base);
   
   &:focus {
     border-color: var(--text-accent);
@@ -688,12 +733,12 @@ body {
 /* 23. 优化按钮样式 */
 button,
 .search-button {
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 8px;
+  transition: all var(--transition-base);
+  border-radius: var(--radius-m);
   
   &:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-md);
   }
   
   &:active {
@@ -703,6 +748,7 @@ button,
   &:focus-visible {
     outline: 2px solid var(--text-accent);
     outline-offset: 2px;
+    border-radius: var(--radius-m);
   }
 }
 
@@ -726,28 +772,29 @@ button,
 
 /* 26. 优化图表组件 */
 .graph {
-  border-radius: 12px;
+  border-radius: var(--radius-l);
   overflow: hidden;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow var(--transition-slow);
   
   &:hover {
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-lg);
   }
 }
 
 /* 27. 优化返回链接 */
 .backlinks {
   .backlink {
-    transition: all 0.2s ease;
-    border-radius: 8px;
-    padding: 0.75em;
-    margin-bottom: 0.5em;
-    
-    &:hover {
-      background-color: color-mix(in srgb, var(--background-secondary) 40%, transparent);
-      transform: translateX(4px);
-    }
+    transition: all var(--transition-base);
+  border-radius: var(--radius-m);
+  padding: 0.75em;
+  margin-bottom: 0.5em;
+  transition: all var(--transition-base);
+  
+  &:hover {
+    background-color: color-mix(in srgb, var(--background-secondary) 40%, transparent);
+    transform: translateX(4px);
+  }
     
     a {
       border-bottom: none;
@@ -759,18 +806,18 @@ button,
 .content .tag {
   display: inline-block;
   padding: 0.25em 0.75em;
-  border-radius: 20px;
+  border-radius: 1em;
   background-color: color-mix(in srgb, var(--text-accent) 15%, transparent);
   color: var(--text-accent);
   font-size: 0.85em;
   font-weight: 500;
-  transition: all 0.2s ease;
+  transition: all var(--transition-base);
   border: 1px solid color-mix(in srgb, var(--text-accent) 25%, transparent);
   
   &:hover {
     background-color: color-mix(in srgb, var(--text-accent) 25%, transparent);
     transform: translateY(-1px);
-    box-shadow: 0 2px 8px color-mix(in srgb, var(--text-accent) 20%, transparent);
+    box-shadow: var(--shadow-base);
   }
 }
 
@@ -800,7 +847,7 @@ button,
     /* 移动端图片 */
     img {
       margin: 1.5em auto;
-      border-radius: 8px;
+      border-radius: var(--radius-m);
     }
     
     /* 移动端代码块 */
@@ -849,7 +896,7 @@ button,
 
 ::-webkit-scrollbar-thumb {
   background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
-  border-radius: 5px;
+  border-radius: var(--radius-s);
   border: 2px solid var(--background-primary);
   
   &:hover {
@@ -951,7 +998,7 @@ button,
   background-color: color-mix(in srgb, var(--text-accent) 20%, transparent);
   color: var(--text-normal);
   padding: 0.1em 0.3em;
-  border-radius: 3px;
+  border-radius: var(--radius-xs);
 }
 
 /* 40. 优化响应式图片容器 */
