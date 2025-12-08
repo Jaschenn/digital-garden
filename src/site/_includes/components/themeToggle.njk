@@ -95,16 +95,20 @@
         auto: button.querySelector('.theme-icon-auto')
       };
       
-      // 隐藏所有图标
+      // 隐藏所有图标 - 使用 display 和 opacity 双重控制
       Object.values(icons).forEach(icon => {
         if (icon) {
           icon.style.opacity = '0';
+          icon.style.display = 'none';
+          icon.style.visibility = 'hidden';
         }
       });
       
       // 显示当前主题图标
       if (icons[theme]) {
         icons[theme].style.opacity = '1';
+        icons[theme].style.display = 'flex';
+        icons[theme].style.visibility = 'visible';
       }
       
       // 更新标题
