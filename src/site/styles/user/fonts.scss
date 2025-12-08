@@ -8,7 +8,7 @@
 
 /* 上图东观体：Regular */
 @font-face {
-  font-family: "DongGuanTi";
+  font-family: "STDongGuanTi";
   src: url("/fonts/DongGuanTi-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
@@ -16,7 +16,7 @@
 
 /* 上图东观体：Bold */
 @font-face {
-  font-family: "DongGuanTi";
+  font-family: "STDongGuanTi";
   src: url("/fonts/DongGuanTi-Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
@@ -24,7 +24,7 @@
 
 /* 上图东观体：Light */
 @font-face {
-  font-family: "DongGuanTi";
+  font-family: "STDongGuanTi";
   src: url("/fonts/DongGuanTi-Light.woff2") format("woff2");
   font-weight: 300;
   font-style: normal;
@@ -32,7 +32,7 @@
 
 body {
   /* 优先用 JetBrainsMono 显示英文，CJK 会 fallback 到 DongGuanTi */
-  font-family: "JetBrainsMonoNerd", "DongGuanTi", sans-serif !important;
+  font-family: "JetBrainsMonoNerd", "STDongGuanTi", sans-serif !important;
 }
 
 body h1,
@@ -41,7 +41,7 @@ body h3,
 body h4,
 body h5,
 body h6 {
-  font-family: "JetBrainsMonoNerd", "DongGuanTi", sans-serif !important;
+  font-family: "JetBrainsMonoNerd", "STDongGuanTi", sans-serif !important;
 }
 
 body pre,
