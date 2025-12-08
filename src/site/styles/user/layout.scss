@@ -1,11 +1,19 @@
 /* ========================
-   布局优化样式
+   生产级布局优化样式
    ======================== */
 
 /* 1. 增加内容区域宽度，充分利用屏幕空间 */
 body {
   /* 默认值：根据屏幕宽度动态调整 */
   --dg-content-max-width: min(1200px, calc(100vw - 600px));
+  
+  /* 优化字体渲染 */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  
+  /* 平滑滚动 */
+  scroll-behavior: smooth;
 }
 
 /* 在大屏幕上使用更大的宽度 */
@@ -51,10 +59,20 @@ body {
   width: auto !important;
   height: auto !important;
   display: block;
-  margin: 1.5em auto;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 2em auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12), 0 2px 4px rgba(0, 0, 0, 0.08);
   box-sizing: border-box;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: color-mix(in srgb, var(--background-secondary) 30%, transparent);
+}
+
+/* 图片悬停效果 */
+.content img:hover,
+.markdown-preview-view img:hover,
+.markdown-rendered img:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16), 0 4px 8px rgba(0, 0, 0, 0.12);
 }
 
 /* 确保图片容器也不会超出 */
@@ -62,10 +80,19 @@ body {
 .markdown-preview-view figure,
 .markdown-rendered figure {
   max-width: 100%;
-  margin: 1.5em auto;
+  margin: 2em auto;
+  text-align: center;
   
   img {
     max-width: 100%;
+    margin: 0;
+  }
+  
+  figcaption {
+    margin-top: 0.75em;
+    font-size: 0.9em;
+    color: var(--text-muted);
+    font-style: italic;
   }
 }
 
@@ -77,62 +104,186 @@ body {
   margin: 0.5em 0.5em 0.5em 0;
   vertical-align: middle;
   max-width: 100%;
+  border-radius: 4px;
+  box-shadow: none;
+  
+  &:hover {
+    transform: none;
+  }
 }
 
 /* 3. 优化左侧目录的竖线样式 */
 .filelist {
   /* 使用更细、更柔和的竖线 */
-  border-left: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent) !important;
+  border-left: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent) !important;
   margin-left: var(--dg-filelist-margin);
-  transition: border-color 0.2s ease;
+  transition: border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  
+  /* 添加微妙的渐变效果 */
+  &::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      color-mix(in srgb, var(--text-muted) 20%, transparent) 20%,
+      color-mix(in srgb, var(--text-muted) 20%, transparent) 80%,
+      transparent 100%
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  &:hover::before {
+    opacity: 1;
+  }
 }
 
 /* 悬停时稍微加深竖线 */
 .filelist:hover {
-  border-left-color: color-mix(in srgb, var(--text-muted) 30%, transparent) !important;
+  border-left-color: color-mix(in srgb, var(--text-muted) 25%, transparent) !important;
 }
 
 /* 4. 优化内容区域的内边距和间距 */
 .content {
-  padding-left: 2rem;
-  padding-right: 2rem;
+  padding-left: 3rem;
+  padding-right: 3rem;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  
+  @media (max-width: 1200px) {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
   
   @media (max-width: 800px) {
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
 }
 
-/* 5. 优化整体布局间距 */
+/* 5. 优化整体布局间距和排版 */
 .content {
-  /* 段落间距 */
+  /* 段落间距 - 使用更专业的排版比例 */
   p {
-    margin-bottom: 1.2em;
+    margin-bottom: 1.5em;
+    line-height: 1.8;
+    word-spacing: 0.05em;
   }
   
-  /* 标题间距 */
-  h1, h2, h3, h4, h5, h6 {
-    margin-top: 1.8em;
+  /* 标题间距 - 建立清晰的视觉层次 */
+  h1 {
+    margin-top: 2.5em;
+    margin-bottom: 1em;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    scroll-margin-top: 90px; /* 为固定导航栏留出空间 */
+  }
+  
+  h2 {
+    margin-top: 2.2em;
+    margin-bottom: 0.9em;
+    font-weight: 650;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+    scroll-margin-top: 90px;
+  }
+  
+  h3 {
+    margin-top: 2em;
     margin-bottom: 0.8em;
+    font-weight: 600;
+    line-height: 1.35;
+    scroll-margin-top: 90px;
   }
   
-  /* 列表间距 */
+  h4, h5, h6 {
+    margin-top: 1.8em;
+    margin-bottom: 0.7em;
+    font-weight: 600;
+    line-height: 1.4;
+    scroll-margin-top: 90px;
+  }
+  
+  /* 第一个元素不需要上边距 */
+  > *:first-child {
+    margin-top: 0;
+  }
+  
+  /* 列表间距和样式 */
   ul, ol {
-    margin-bottom: 1.2em;
+    margin-bottom: 1.5em;
+    padding-left: 1.75em;
+    line-height: 1.8;
+    
+    li {
+      margin-bottom: 0.5em;
+      
+      p {
+        margin-bottom: 0.75em;
+      }
+    }
   }
   
-  /* 代码块间距 */
+  /* 嵌套列表 */
+  ul ul, ol ol, ul ol, ol ul {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+  
+  /* 代码块间距和样式 */
   pre {
-    margin: 1.5em 0;
-    border-radius: 8px;
+    margin: 2em 0;
+    border-radius: 12px;
     overflow-x: auto;
+    padding: 1.5em;
+    background-color: color-mix(in srgb, var(--background-secondary) 60%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text-muted) 10%, transparent);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+    position: relative;
+    
+    /* 代码块滚动条 */
+    &::-webkit-scrollbar {
+      height: 8px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
+      border-radius: 4px;
+      
+      &:hover {
+        background-color: color-mix(in srgb, var(--text-muted) 50%, transparent);
+      }
+    }
   }
   
-  /* 引用块间距 */
+  /* 引用块间距和样式 */
   blockquote {
-    margin: 1.5em 0;
-    padding: 1em 1.5em;
-    border-radius: 6px;
+    margin: 2em 0;
+    padding: 1.25em 1.75em;
+    border-radius: 8px;
+    border-left: 4px solid var(--text-accent);
+    background-color: color-mix(in srgb, var(--background-secondary) 40%, transparent);
+    font-style: italic;
+    position: relative;
+    
+    p {
+      margin-bottom: 0.75em;
+      
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
   }
 }
 
@@ -142,17 +293,54 @@ body {
   max-width: 100%;
   overflow-x: auto;
   display: block;
-  margin: 1.5em 0;
-  border-collapse: collapse;
+  margin: 2em 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  
+  /* 表格容器 */
+  &::before {
+    content: '';
+    display: block;
+    width: 100%;
+  }
   
   th, td {
-    padding: 0.75em 1em;
-    border: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent);
+    padding: 0.875em 1.25em;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+    text-align: left;
+    transition: background-color 0.2s ease;
   }
   
   th {
-    background-color: color-mix(in srgb, var(--background-secondary) 50%, transparent);
+    background-color: color-mix(in srgb, var(--background-secondary) 60%, transparent);
     font-weight: 600;
+    color: var(--text-normal);
+    border-bottom: 2px solid color-mix(in srgb, var(--text-muted) 25%, transparent);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+  
+  tbody tr {
+    &:hover {
+      background-color: color-mix(in srgb, var(--background-secondary) 30%, transparent);
+    }
+    
+    &:last-child td {
+      border-bottom: none;
+    }
+  }
+  
+  /* 斑马纹（可选，更专业） */
+  tbody tr:nth-child(even) {
+    background-color: color-mix(in srgb, var(--background-secondary) 20%, transparent);
+    
+    &:hover {
+      background-color: color-mix(in srgb, var(--background-secondary) 40%, transparent);
+    }
   }
 }
 
@@ -199,28 +387,76 @@ body {
 /* 9. 优化链接样式 */
 .content a {
   text-decoration: none;
-  border-bottom: 1px solid color-mix(in srgb, var(--link-color) 30%, transparent);
-  transition: border-color 0.2s ease;
+  color: var(--link-color, var(--text-accent));
+  border-bottom: 1.5px solid color-mix(in srgb, var(--link-color, var(--text-accent)) 25%, transparent);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 500;
+  position: relative;
   
   &:hover {
-    border-bottom-color: var(--link-color);
+    border-bottom-color: var(--link-color, var(--text-accent));
+    color: var(--link-color-hover, var(--text-accent-hover));
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--text-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  
+  /* 内部链接特殊样式 */
+  &.internal-link {
+    border-bottom-style: dashed;
+  }
+  
+  /* 外部链接 */
+  &.external-link {
+    &::after {
+      content: '↗';
+      margin-left: 0.25em;
+      font-size: 0.85em;
+      opacity: 0.6;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      display: inline-block;
+    }
+    
+    &:hover::after {
+      opacity: 1;
+      transform: translate(2px, -2px);
+    }
   }
 }
 
 /* 10. 优化代码块样式 */
-.content pre code {
-  display: block;
-  padding: 1.2em;
-  overflow-x: auto;
-  font-size: 0.9em;
-  line-height: 1.6;
+.content pre {
+  code {
+    display: block;
+    padding: 0;
+    overflow-x: auto;
+    font-size: 0.9em;
+    line-height: 1.7;
+    font-family: "JetBrainsMonoNerd", monospace;
+    color: var(--text-normal);
+    background: transparent;
+    border: none;
+  }
 }
 
 .content code:not(pre code) {
-  padding: 0.2em 0.4em;
-  border-radius: 4px;
-  background-color: color-mix(in srgb, var(--background-secondary) 50%, transparent);
-  font-size: 0.9em;
+  padding: 0.25em 0.5em;
+  border-radius: 6px;
+  background-color: color-mix(in srgb, var(--background-secondary) 60%, transparent);
+  font-size: 0.875em;
+  font-family: "JetBrainsMonoNerd", monospace;
+  color: var(--text-accent);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background-color: color-mix(in srgb, var(--background-secondary) 70%, transparent);
+    border-color: color-mix(in srgb, var(--text-muted) 25%, transparent);
+  }
 }
 
 /* 11. 优化响应式布局 */
@@ -241,8 +477,531 @@ body {
 
 /* 12. 优化分隔线 */
 .content hr {
-  margin: 2em 0;
+  margin: 3em 0;
   border: none;
   border-top: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent);
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 1px;
+    background: var(--text-accent);
+    opacity: 0.4;
+  }
+}
+
+/* 13. 优化文件树链接样式 */
+.notelink {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 6px;
+  margin: 2px 0;
+  
+  &:hover {
+    background-color: color-mix(in srgb, var(--text-accent) 8%, transparent) !important;
+    transform: translateX(2px);
+  }
+  
+  &.active-note {
+    background-color: color-mix(in srgb, var(--text-accent) 12%, transparent) !important;
+    border-left-color: var(--text-accent) !important;
+    border-left-width: 3px !important;
+    
+    .filename {
+      color: var(--text-normal) !important;
+      font-weight: 600;
+    }
+  }
+  
+  a {
+    border-bottom: none;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: var(--text-accent);
+    }
+  }
+}
+
+/* 14. 优化文件夹样式 */
+.foldername-wrapper {
+  transition: all 0.2s ease;
+  border-radius: 6px;
+  padding: 4px 8px;
+  margin: 4px 0;
+  
+  &:hover {
+    background-color: color-mix(in srgb, var(--text-muted) 8%, transparent);
+    
+    i, svg {
+      opacity: 0.8;
+    }
+  }
+}
+
+/* 15. 优化侧边栏组件 */
+.sidebar {
+  /* 平滑过渡 */
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-container {
+  /* 优化间距 */
+  gap: 2rem;
+}
+
+/* 16. 优化 TOC 样式 */
+.toc {
+  ul {
+    border-left: 2px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+    padding-left: 1em;
+    
+    li {
+      a {
+        border-bottom: none;
+        color: var(--text-muted);
+        transition: color 0.2s ease, transform 0.2s ease;
+        display: inline-block;
+        
+        &:hover {
+          color: var(--text-normal);
+          transform: translateX(4px);
+        }
+      }
+    }
+  }
+}
+
+/* 17. 优化引用和 Callout */
+.content .callout {
+  border-radius: 10px;
+  margin: 2em 0;
+  padding: 1.25em 1.5em;
+  border-left-width: 4px;
+  transition: box-shadow 0.3s ease, transform 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+  }
+}
+
+/* 18. 优化列表标记 */
+.content ul {
+  list-style-type: none;
+  position: relative;
+  
+  li::before {
+    content: '•';
+    color: var(--text-accent);
+    font-weight: bold;
+    position: absolute;
+    left: -1.25em;
+    opacity: 0.6;
+  }
+}
+
+.content ol {
+  counter-reset: list-counter;
+  
+  li {
+    counter-increment: list-counter;
+    position: relative;
+    
+    &::before {
+      content: counter(list-counter) '.';
+      color: var(--text-accent);
+      font-weight: 600;
+      position: absolute;
+      left: -1.75em;
+      opacity: 0.7;
+    }
+  }
+}
+
+/* 19. 优化键盘导航和可访问性 */
+*:focus-visible {
+  outline: 2px solid var(--text-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* 20. 优化加载和过渡效果 */
+.content {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 21. 优化打印样式 */
+@media print {
+  .content {
+    max-width: 100%;
+    padding: 0;
+    
+    img {
+      box-shadow: none;
+      page-break-inside: avoid;
+    }
+    
+    pre {
+      page-break-inside: avoid;
+    }
+  }
+  
+  .filetree-wrapper,
+  .sidebar {
+    display: none;
+  }
+}
+
+/* 22. 优化搜索框样式 */
+.search-box {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 10%, transparent);
+}
+
+.search-box input {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  &:focus {
+    border-color: var(--text-accent);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-accent) 15%, transparent);
+  }
+}
+
+/* 23. 优化按钮样式 */
+button,
+.search-button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+  
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:focus-visible {
+    outline: 2px solid var(--text-accent);
+    outline-offset: 2px;
+  }
+}
+
+/* 24. 优化导航栏 */
+.navbar {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: color-mix(in srgb, var(--background-primary) 95%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 10%, transparent);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* 25. 优化文件树标题 */
+.filetree-sidebar h1 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 1em;
+  padding-bottom: 0.75em;
+  border-bottom: 2px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+}
+
+/* 26. 优化图表组件 */
+.graph {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  }
+}
+
+/* 27. 优化返回链接 */
+.backlinks {
+  .backlink {
+    transition: all 0.2s ease;
+    border-radius: 8px;
+    padding: 0.75em;
+    margin-bottom: 0.5em;
+    
+    &:hover {
+      background-color: color-mix(in srgb, var(--background-secondary) 40%, transparent);
+      transform: translateX(4px);
+    }
+    
+    a {
+      border-bottom: none;
+    }
+  }
+}
+
+/* 28. 优化标签样式 */
+.content .tag {
+  display: inline-block;
+  padding: 0.25em 0.75em;
+  border-radius: 20px;
+  background-color: color-mix(in srgb, var(--text-accent) 15%, transparent);
+  color: var(--text-accent);
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: 1px solid color-mix(in srgb, var(--text-accent) 25%, transparent);
+  
+  &:hover {
+    background-color: color-mix(in srgb, var(--text-accent) 25%, transparent);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px color-mix(in srgb, var(--text-accent) 20%, transparent);
+  }
+}
+
+/* 29. 优化移动端体验 */
+@media (max-width: 800px) {
+  .content {
+    /* 移动端减少间距 */
+    h1 {
+      margin-top: 1.5em;
+      font-size: 1.75em;
+    }
+    
+    h2 {
+      margin-top: 1.3em;
+      font-size: 1.5em;
+    }
+    
+    h3 {
+      margin-top: 1.2em;
+      font-size: 1.25em;
+    }
+    
+    p {
+      margin-bottom: 1.2em;
+    }
+    
+    /* 移动端图片 */
+    img {
+      margin: 1.5em auto;
+      border-radius: 8px;
+    }
+    
+    /* 移动端代码块 */
+    pre {
+      padding: 1em;
+      font-size: 0.85em;
+      margin: 1.5em 0;
+    }
+    
+    /* 移动端表格 */
+    table {
+      font-size: 0.9em;
+      
+      th, td {
+        padding: 0.5em 0.75em;
+      }
+    }
+  }
+  
+  /* 移动端文件树 */
+  .filetree-wrapper {
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* 30. 优化选择文本样式 */
+::selection {
+  background-color: color-mix(in srgb, var(--text-accent) 25%, transparent);
+  color: var(--text-normal);
+}
+
+::-moz-selection {
+  background-color: color-mix(in srgb, var(--text-accent) 25%, transparent);
+  color: var(--text-normal);
+}
+
+/* 31. 优化滚动条（全局） */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
+  border-radius: 5px;
+  border: 2px solid var(--background-primary);
+  
+  &:hover {
+    background-color: color-mix(in srgb, var(--text-muted) 50%, transparent);
+  }
+}
+
+/* 32. 优化加载状态 */
+.content.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* 33. 优化空状态 */
+.empty-state {
+  text-align: center;
+  padding: 3em 2em;
+  color: var(--text-muted);
+  
+  &::before {
+    content: '📝';
+    font-size: 3em;
+    display: block;
+    margin-bottom: 1em;
+    opacity: 0.5;
+  }
+}
+
+/* 34. 优化元数据和时间戳 */
+.content .header-meta,
+.content .timestamps {
+  font-size: 0.9em;
+  color: var(--text-muted);
+  margin-bottom: 1.5em;
+  padding-bottom: 1em;
+  border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+}
+
+/* 35. 优化数学公式显示 */
+.content .math {
+  overflow-x: auto;
+  padding: 0.5em 0;
+  
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+}
+
+/* 36. 优化任务列表 */
+.content ul.task-list {
+  list-style: none;
+  padding-left: 0;
+  
+  li {
+    padding-left: 1.5em;
+    position: relative;
+    
+    input[type="checkbox"] {
+      position: absolute;
+      left: 0;
+      top: 0.3em;
+      width: 1.2em;
+      height: 1.2em;
+      cursor: pointer;
+      accent-color: var(--text-accent);
+    }
+    
+    &::before {
+      display: none;
+    }
+  }
+}
+
+/* 37. 优化内联代码在链接中 */
+.content a code {
+  background-color: color-mix(in srgb, var(--text-accent) 20%, transparent);
+  color: var(--text-accent);
+  border-color: color-mix(in srgb, var(--text-accent) 30%, transparent);
+}
+
+/* 38. 优化强调文本 */
+.content strong {
+  font-weight: 650;
+  color: var(--text-normal);
+}
+
+.content em {
+  font-style: italic;
+  color: var(--text-normal);
+}
+
+/* 39. 优化删除线和标记 */
+.content del {
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.content mark {
+  background-color: color-mix(in srgb, var(--text-accent) 20%, transparent);
+  color: var(--text-normal);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+/* 40. 优化响应式图片容器 */
+.content .image-container {
+  position: relative;
+  margin: 2em auto;
+  max-width: 100%;
+  
+  img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* 41. 优化深色模式下的对比度 */
+@media (prefers-color-scheme: dark) {
+  .content {
+    /* 确保足够的对比度 */
+    --min-contrast: 4.5;
+  }
+}
+
+/* 42. 优化减少动画偏好 */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* 43. 优化高对比度模式 */
+@media (prefers-contrast: high) {
+  .content {
+    a {
+      border-bottom-width: 2px;
+      font-weight: 600;
+    }
+    
+    code {
+      border-width: 2px;
+    }
+    
+    table th,
+    table td {
+      border-width: 2px;
+    }
+  }
 }
 
