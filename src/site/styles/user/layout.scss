@@ -1,0 +1,248 @@
+/* ========================
+   布局优化样式
+   ======================== */
+
+/* 1. 增加内容区域宽度，充分利用屏幕空间 */
+body {
+  /* 默认值：根据屏幕宽度动态调整 */
+  --dg-content-max-width: min(1200px, calc(100vw - 600px));
+}
+
+/* 在大屏幕上使用更大的宽度 */
+@media (min-width: 1600px) {
+  body {
+    --dg-content-max-width: 1400px;
+  }
+}
+
+/* 中等屏幕 */
+@media (min-width: 1400px) and (max-width: 1599px) {
+  body {
+    --dg-content-max-width: 1200px;
+  }
+}
+
+/* 小屏幕 */
+@media (max-width: 1399px) {
+  body {
+    --dg-content-max-width: 900px;
+  }
+}
+
+/* 移动端 */
+@media (max-width: 1000px) {
+  body {
+    --dg-content-max-width: 700px;
+  }
+}
+
+/* 小屏移动端 */
+@media (max-width: 800px) {
+  body {
+    --dg-content-max-width: calc(100vw - 40px);
+  }
+}
+
+/* 2. 优化图片显示，确保图片不会超出内容区域 */
+.content img,
+.markdown-preview-view img,
+.markdown-rendered img {
+  max-width: 100% !important;
+  width: auto !important;
+  height: auto !important;
+  display: block;
+  margin: 1.5em auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+/* 确保图片容器也不会超出 */
+.content figure,
+.markdown-preview-view figure,
+.markdown-rendered figure {
+  max-width: 100%;
+  margin: 1.5em auto;
+  
+  img {
+    max-width: 100%;
+  }
+}
+
+/* 内联图片保持原有样式 */
+.content p img,
+.markdown-preview-view p img,
+.markdown-rendered p img {
+  display: inline-block;
+  margin: 0.5em 0.5em 0.5em 0;
+  vertical-align: middle;
+  max-width: 100%;
+}
+
+/* 3. 优化左侧目录的竖线样式 */
+.filelist {
+  /* 使用更细、更柔和的竖线 */
+  border-left: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent) !important;
+  margin-left: var(--dg-filelist-margin);
+  transition: border-color 0.2s ease;
+}
+
+/* 悬停时稍微加深竖线 */
+.filelist:hover {
+  border-left-color: color-mix(in srgb, var(--text-muted) 30%, transparent) !important;
+}
+
+/* 4. 优化内容区域的内边距和间距 */
+.content {
+  padding-left: 2rem;
+  padding-right: 2rem;
+  
+  @media (max-width: 800px) {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* 5. 优化整体布局间距 */
+.content {
+  /* 段落间距 */
+  p {
+    margin-bottom: 1.2em;
+  }
+  
+  /* 标题间距 */
+  h1, h2, h3, h4, h5, h6 {
+    margin-top: 1.8em;
+    margin-bottom: 0.8em;
+  }
+  
+  /* 列表间距 */
+  ul, ol {
+    margin-bottom: 1.2em;
+  }
+  
+  /* 代码块间距 */
+  pre {
+    margin: 1.5em 0;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  
+  /* 引用块间距 */
+  blockquote {
+    margin: 1.5em 0;
+    padding: 1em 1.5em;
+    border-radius: 6px;
+  }
+}
+
+/* 6. 优化表格显示 */
+.content table {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  display: block;
+  margin: 1.5em 0;
+  border-collapse: collapse;
+  
+  th, td {
+    padding: 0.75em 1em;
+    border: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent);
+  }
+  
+  th {
+    background-color: color-mix(in srgb, var(--background-secondary) 50%, transparent);
+    font-weight: 600;
+  }
+}
+
+/* 7. 优化侧边栏间距 */
+@media (min-width: 1400px) {
+  .sidebar {
+    left: calc(50vw + calc(var(--dg-content-max-width) / 2) + 60px) !important;
+  }
+  
+  .filetree-wrapper {
+    width: calc(50vw - calc(var(--dg-content-max-width) / 2) - 60px) !important;
+  }
+}
+
+/* 8. 优化文件树样式 */
+.filetree-sidebar {
+  /* 更柔和的背景 */
+  background-color: color-mix(in srgb, var(--background-secondary) 80%, transparent);
+  
+  /* 优化滚动条 */
+  .folder {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--text-muted) 30%, transparent) transparent;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
+      border-radius: 3px;
+      
+      &:hover {
+        background-color: color-mix(in srgb, var(--text-muted) 50%, transparent);
+      }
+    }
+  }
+}
+
+/* 9. 优化链接样式 */
+.content a {
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--link-color) 30%, transparent);
+  transition: border-color 0.2s ease;
+  
+  &:hover {
+    border-bottom-color: var(--link-color);
+  }
+}
+
+/* 10. 优化代码块样式 */
+.content pre code {
+  display: block;
+  padding: 1.2em;
+  overflow-x: auto;
+  font-size: 0.9em;
+  line-height: 1.6;
+}
+
+.content code:not(pre code) {
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  background-color: color-mix(in srgb, var(--background-secondary) 50%, transparent);
+  font-size: 0.9em;
+}
+
+/* 11. 优化响应式布局 */
+@media (max-width: 1400px) {
+  .content {
+    margin-left: 270px;
+    max-width: calc(100vw - 300px) !important;
+  }
+}
+
+@media (max-width: 1000px) {
+  .content {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: var(--dg-content-max-width) !important;
+  }
+}
+
+/* 12. 优化分隔线 */
+.content hr {
+  margin: 2em 0;
+  border: none;
+  border-top: 1px solid color-mix(in srgb, var(--text-muted) 20%, transparent);
+}
+
