@@ -1,3 +1,382 @@
 /* Custom style overrides */
 /* This file is for custom style overrides */
 
+/* ============================================
+   Obsidian Publish 官方样式优化
+   ============================================ */
+
+/* 1. 优化右侧侧边栏整体样式 - 更接近官方 Publish */
+.sidebar {
+  /* 确保侧边栏有合适的背景和间距 */
+  background: transparent;
+}
+
+.sidebar-container {
+  /* 优化组件之间的间距 */
+  gap: 1.5rem;
+  
+  @media (min-width: 1400px) {
+    gap: 2rem;
+  }
+}
+
+/* 2. 优化图谱容器 - 白色背景框（类似官方 Publish） */
+.graph {
+  /* 白色/浅色背景容器 */
+  background-color: var(--background-primary);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1.5rem;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    border-color: color-mix(in srgb, var(--text-muted) 25%, transparent);
+  }
+  
+  /* 图谱标题样式 */
+  .graph-title-container {
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 10%, transparent);
+    width: 100%;
+    
+    .graph-title {
+      display: block !important;
+      visibility: visible !important;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--text-normal);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0 0 12px 0;
+      width: 100%;
+    }
+    
+    #graph-controls {
+      width: 100%;
+      margin-top: 0;
+    }
+  }
+  
+  /* 图谱画布容器 */
+  #link-graph {
+    background-color: var(--background-secondary);
+    border-radius: 6px;
+    overflow: hidden;
+    width: 100% !important;
+    height: 250px !important;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+}
+
+/* 3. 优化目录（TOC）样式 - "ON THIS PAGE" 风格 */
+.toc {
+  /* 白色/浅色背景容器 */
+  background-color: var(--background-primary);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    border-color: color-mix(in srgb, var(--text-muted) 25%, transparent);
+  }
+  
+  .toc-title-container {
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 10%, transparent);
+    
+    .toc-title {
+      font-size: 0.875rem !important;
+      font-weight: 600 !important;
+      color: var(--text-normal) !important;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  
+  .toc-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 4px;
+    
+    /* 优化滚动条 */
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--text-muted) 30%, transparent) transparent;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
+      border-radius: 3px;
+      
+      &:hover {
+        background-color: color-mix(in srgb, var(--text-muted) 50%, transparent);
+      }
+    }
+    
+    ul, ol {
+      border-left: none;
+      padding-left: 0;
+      margin: 0;
+    }
+    
+    li {
+      padding: 4px 0;
+      margin: 0;
+      
+      a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.875rem;
+        line-height: 1.5;
+        transition: color 0.2s ease;
+        display: block;
+        
+        &:hover {
+          color: var(--text-normal);
+          text-decoration: none;
+        }
+      }
+    }
+    
+    /* 嵌套列表样式 */
+    ul ul, ol ol {
+      margin-left: 12px;
+      margin-top: 4px;
+      padding-left: 12px;
+      border-left: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+    }
+  }
+}
+
+/* 4. 优化返回链接（Backlinks）样式 */
+.backlinks {
+  background-color: var(--background-primary);
+  border: 1px solid color-mix(in srgb, var(--text-muted) 15%, transparent);
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-top: 0;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    border-color: color-mix(in srgb, var(--text-muted) 25%, transparent);
+  }
+  
+  .backlink-title {
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    color: var(--text-normal) !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 12px 0 !important;
+    padding-bottom: 12px;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-muted) 10%, transparent);
+  }
+  
+  .backlink-list {
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 4px;
+    
+    /* 优化滚动条 */
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--text-muted) 30%, transparent) transparent;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background-color: color-mix(in srgb, var(--text-muted) 30%, transparent);
+      border-radius: 3px;
+      
+      &:hover {
+        background-color: color-mix(in srgb, var(--text-muted) 50%, transparent);
+      }
+    }
+  }
+  
+  .backlink-card {
+    padding: 8px 0;
+    margin: 0;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    
+    &:hover {
+      background-color: color-mix(in srgb, var(--background-secondary) 40%, transparent);
+    }
+    
+    a {
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      
+      &:hover {
+        color: var(--text-normal);
+      }
+    }
+  }
+}
+
+/* 5. 优化整体配色协调性 */
+body {
+  /* 确保背景色协调 */
+  background-color: var(--background-primary);
+}
+
+/* 6. 优化内容区域的标签样式（紫色标签） */
+.content .header-tags {
+  margin-bottom: 1rem;
+  
+  .tag {
+    display: inline-block;
+    padding: 0.25em 0.75em;
+    margin-right: 0.5em;
+    margin-bottom: 0.5em;
+    border-radius: 4px;
+    background-color: color-mix(in srgb, var(--text-accent) 15%, transparent);
+    color: var(--text-accent);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    border: 1px solid color-mix(in srgb, var(--text-accent) 25%, transparent);
+    transition: all 0.2s ease;
+    
+    &:hover {
+      background-color: color-mix(in srgb, var(--text-accent) 25%, transparent);
+      border-color: var(--text-accent);
+      transform: translateY(-1px);
+    }
+  }
+}
+
+/* 7. 优化响应式布局 */
+@media (max-width: 1400px) {
+  .sidebar-container {
+    gap: 1.5rem;
+  }
+  
+  .graph,
+  .toc,
+  .backlinks {
+    padding: 12px;
+  }
+}
+
+/* 8. 优化移动端显示 */
+@media (max-width: 1000px) {
+  .graph,
+  .toc,
+  .backlinks {
+    border-radius: 6px;
+    padding: 12px;
+  }
+}
+
+/* 9. 统一侧边栏组件的视觉风格 */
+.sidebar-container > * {
+  /* 确保所有组件都有统一的视觉风格 */
+  width: 100%;
+}
+
+/* 10. 优化图谱控制按钮样式 */
+.graph #graph-controls {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  
+  .depth-control {
+    label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  }
+  
+  .ctrl-right {
+    display: flex;
+    gap: 8px;
+    
+    svg, i {
+      color: var(--text-muted);
+      transition: color 0.2s ease;
+      
+      &:hover {
+        color: var(--text-normal);
+      }
+    }
+  }
+}
+
+/* 11. 确保图谱标题始终显示 */
+.graph-title-container {
+  .graph-title {
+    display: block !important;
+    visibility: visible !important;
+  }
+}
+
+/* 12. 优化侧边栏整体间距和布局 */
+.sidebar {
+  /* 确保侧边栏内容有合适的顶部间距 */
+  top: 90px;
+  
+  @media (max-width: 800px) {
+    top: 75px;
+  }
+}
+
+/* 13. 优化内容区域与侧边栏的协调性 */
+.content {
+  /* 确保内容区域与侧边栏视觉上协调 */
+  color: var(--text-normal);
+}
+
+/* 14. 优化深色/浅色模式下的容器背景 */
+.theme-dark {
+  .graph,
+  .toc,
+  .backlinks {
+    background-color: color-mix(in srgb, var(--background-primary) 98%, var(--background-secondary));
+  }
+}
+
+.theme-light {
+  .graph,
+  .toc,
+  .backlinks {
+    background-color: color-mix(in srgb, var(--background-primary) 95%, white);
+  }
+}
+
