@@ -1,17 +1,8 @@
 # Digital Obsidian Garden
-
 This is the template to be used together with the [Digital Garden Obsidian Plugin](https://github.com/oleeskild/Obsidian-Digital-Garden).
 See the README in the plugin repo for information on how to set it up.
 
-## GitHub Pages Deployment
-
-This template is configured to deploy directly to **GitHub Pages** using GitHub Actions.
-
-1.  **Repository Settings**: Go to your repository's **Settings** > **Pages**.
-2.  **Build and deployment**: Under "Source", select **GitHub Actions**.
-3.  **Push**: Any push to the `main` branch will trigger a build and deployment.
-
-**Note**: If you are deploying to a user site (e.g., `username.github.io`), the site will be at the root. If you are deploying to a project site (e.g., `username.github.io/repo-name`), the template will automatically handle the path prefix.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/oleeskild/digitalgarden)
 
 ---
 ## Docs
@@ -33,6 +24,12 @@ body {
     --dg-sidebar-max-width: 400px;
 }
 ```
+
+### Responsive Layout Notes
+
+- Content will never overlap the filetree, regardless of `--dg-content-max-width` value
+- The right sidebar (TOC/graph/backlinks) automatically hides when there isn't enough viewport space
+- To make the sidebar appear at smaller viewports, reduce `--dg-sidebar-max-width`
 
 ### Available Variables
 
@@ -157,6 +154,9 @@ You can override the base Obsidian theme color variables directly:
 | `--dg-navbar-title-size-mobile` | `18px` | Navbar title size on mobile |
 | `--dg-navbar-search-margin` | `20px` | Navbar search button margin |
 | `--dg-navbar-search-min-width` | `36px` | Navbar search min width |
+| `--dg-logo-height` | `40px` | Site logo height on desktop |
+| `--dg-logo-height-mobile` | `32px` | Site logo height on mobile |
+| `--dg-logo-margin` | `10px 15px` | Site logo margin |
 
 #### Note Link / Filetree Item Variables
 
