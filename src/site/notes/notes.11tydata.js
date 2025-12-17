@@ -3,13 +3,6 @@ const settings = require("../../helpers/constants");
 
 const allSettings = settings.ALL_NOTE_SETTINGS;
 
-// 规范化 URL，去除双斜杠
-function normalizeUrl(url) {
-  if (!url) return url;
-  // 替换多个连续斜杠为单个斜杠，但保留开头的双斜杠（如 http://）
-  return url.replace(/([^:]\/)\/+/g, "$1");
-}
-
 module.exports = {
   eleventyComputed: {
     layout: (data) => {
@@ -22,10 +15,7 @@ module.exports = {
       if (data.tags.indexOf("gardenEntry") != -1) {
         return "/";
       }
-      if (data.permalink) {
-        return normalizeUrl(data.permalink);
-      }
-      return undefined;
+      return data.permalink || undefined;
     },
     settings: (data) => {
       const noteSettings = {};

@@ -2,7 +2,7 @@
     {%if fileOrFolder.isNote or fileOrFolder.isFolder%}
         <div x-show="isOpen" style="display:none" class="{{'filelist' if step>0}}">
             {%if fileOrFolder.isNote and not fileOrFolder.hide %}
-                <div class="notelink {{ 'active-note' if fileOrFolder.permalink === permalink}}">
+                <div @click.stop class="notelink {{ 'active-note' if fileOrFolder.permalink === permalink}}">
                     <a data-note-icon="{{fileOrFolder.noteIcon}}" style="text-decoration: none;" class="filename" href="{{fileOrFolder.permalink}}">{{fileOrFolder.name}} </a>
                 </div>
             {% elif fileOrFolder.isFolder%}
@@ -31,40 +31,21 @@
         
         <div x-show="showFilesMobile && !isDesktop" @click="showFilesMobile = false" style="display:none;" class="fullpage-overlay"></div>
 
-      <div class="filetree-wrapper" x-show.important="isDesktop || showFilesMobile" style="display: none;" x-data="{isCollapsed: $persist(false).as('filetree-collapsed')}" :class="{'filetree-collapsed': isCollapsed}">
+      <div class="filetree-wrapper" x-show.important="isDesktop || showFilesMobile" style="display: none;">
       <nav class="filetree-sidebar">
         {% for imp in dynamics.filetree.beforeTitle %}
             {% include imp %}
         {% endfor %}
-        
-        <div class="filetree-top-controls">
-            <a href="{{ '/' | url }}" style="text-decoration: none;" class="site-title-link" x-show="!isCollapsed">
-                <h1>{{meta.siteName}}</h1>
-            </a>
-            
-            <div class="filetree-buttons">
-                 {% include "components/themeToggle.njk" %}
-                 <button 
-                  class="filetree-toggle-button" 
-                  @click="isCollapsed = !isCollapsed"
-                  :aria-label="isCollapsed ? '展开目录' : '折叠目录'"
-                  :title="isCollapsed ? '展开目录' : '折叠目录'">
-                  <i data-lucide="panel-left" class="toggle-icon"></i>
-                </button>
-            </div>
-        </div>
-
+         <a href="/" style="text-decoration: none;">
+               <h1 style="text-align:center;">{{meta.siteName}}</h1>
+         </a>
          {% for imp in dynamics.filetree.afterTitle %}
             {% include imp %}
         {% endfor %}
-        
-        <div class="search-wrapper" x-show="!isCollapsed">
-            {% if settings.dgEnableSearch === true%}
-                {% include "components/searchButton.njk" %}
-            {%endif%}
-        </div>
-
-         <div class="folder filetree-content" x-data="{isOpen: true}" x-show="!isCollapsed">
+        {% if settings.dgEnableSearch === true%}
+            {% include "components/searchButton.njk" %}
+        {%endif%}
+         <div class="folder" x-data="{isOpen: true}">
                {%- for fileOrFolderName, fileOrFolder in filetree -%}
                   {{menuItem(fileOrFolderName, fileOrFolder, 0, fileOrFolderName)}}
                {%- endfor -%}

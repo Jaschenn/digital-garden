@@ -56,15 +56,8 @@ const sortTree = (unsorted) => {
   return orderedTree;
 };
 
-// 规范化 URL，去除双斜杠
-function normalizeUrl(url) {
-  if (!url) return url;
-  // 替换多个连续斜杠为单个斜杠，但保留开头的双斜杠（如 http://）
-  return url.replace(/([^:]\/)\/+/g, "$1");
-}
-
 function getPermalinkMeta(note, key) {
-  let permalink = note.url || "/";
+  let permalink = "/";
   let parts = note.filePathStem.split("/");
   let name = parts[parts.length - 1];
   let noteIcon = process.env.NOTE_ICON_DEFAULT;
@@ -73,7 +66,7 @@ function getPermalinkMeta(note, key) {
   let folders = null;
   try {
     if (note.data.permalink) {
-      permalink = normalizeUrl(note.data.permalink);
+      permalink = note.data.permalink;
     }
     if (note.data.tags && note.data.tags.indexOf("gardenEntry") != -1) {
       permalink = "/";
